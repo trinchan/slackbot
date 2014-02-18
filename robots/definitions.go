@@ -44,6 +44,5 @@ type Configuration struct {
 
 type Robot interface {
 	Run(command *SlashCommand) (slashCommandImmediateReturn string)
-	DeferredAction(command *SlashCommand)
 	Description() (description string)
 }

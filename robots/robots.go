@@ -16,9 +16,6 @@ func (r RobotsBot) Run(command *SlashCommand) (slashCommandImmediateReturn strin
 	return output
 }
 
-func (r RobotsBot) DeferredAction(command *SlashCommand) {
-}
-
 func (r RobotsBot) Description() (description string) {
 	return "Lists commands!\n\tUsage: You already know how to use this!\n\tExpected Response: This message!"
 }
