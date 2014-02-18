@@ -12,7 +12,7 @@ type RollBot struct {
 }
 
 func init() {
-	RegisterRobot("/roll", func() (robot Robot) { return new (RollBot) })
+	RegisterRobot("/roll", func() (robot Robot) { return new(RollBot) })
 }
 
 func (roll RollBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {
@@ -21,11 +21,11 @@ func (roll RollBot) Run(command *SlashCommand) (slashCommandImmediateReturn stri
 }
 
 func (roll RollBot) DeferredAction(command *SlashCommand) {
-	response := new (IncomingWebhook)
+	response := new(IncomingWebhook)
 	response.Channel = command.Channel_ID
 	response.Username = "Dice Bot"
 	response.Text = Roll(command)
-	response.Icon_Emoji   = ":ghost:"
+	response.Icon_Emoji = ":ghost:"
 	response.Unfurl_Links = true
 	response.Parse = "full"
 	MakeIncomingWebhookCall(response)
@@ -46,7 +46,7 @@ func Roll(command *SlashCommand) (result string) {
 		num, err = strconv.Atoi(command.Text)
 	}
 	if err == nil && num > 0 {
-		return fmt.Sprintf("@%s rolled a %d out of %d!", command.User_Name, 1 + r.Intn(num), num)
+		return fmt.Sprintf("@%s rolled a %d out of %d!", command.User_Name, 1+r.Intn(num), num)
 	} else {
 		return fmt.Sprintf("@%s: Invalid input (%s): Must be integer greater than zero!", command.User_Name, command.Text)
 	}

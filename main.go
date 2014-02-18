@@ -13,7 +13,7 @@ func main() {
 	http.HandleFunc("/slack", func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err == nil {
-			command := new (robots.SlashCommand)
+			command := new(robots.SlashCommand)
 			decoder := schema.NewDecoder()
 			err := decoder.Decode(command, r.PostForm)
 			if err != nil {
@@ -36,7 +36,7 @@ func main() {
 func StartServer() {
 	port := robots.Config.Port
 	log.Printf("Starting HTTP server on %d", port)
-	err := http.ListenAndServe(":" + strconv.Itoa(port), nil)
+	err := http.ListenAndServe(":"+strconv.Itoa(port), nil)
 	if err != nil {
 		log.Fatal("Server start error: ", err)
 	}

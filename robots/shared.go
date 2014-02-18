@@ -9,7 +9,7 @@ import (
 )
 
 var Robots = make(map[string]func() Robot)
-var Config = new (Configuration)
+var Config = new(Configuration)
 
 func init() {
 	config, err := ioutil.ReadFile("config.json")
@@ -35,7 +35,7 @@ func RegisterRobot(command string, RobotInitFunction func() Robot) {
 func MakeIncomingWebhookCall(payload *IncomingWebhook) error {
 	webhook := url.URL{
 		Scheme: "https",
-		Host:   Config.Domain+".slack.com",
+		Host:   Config.Domain + ".slack.com",
 		Path:   "/services/hooks/incoming-webhook",
 	}
 

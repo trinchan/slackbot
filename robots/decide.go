@@ -11,7 +11,7 @@ type DecideBot struct {
 }
 
 func init() {
-	RegisterRobot("/decide", func() (robot Robot) { return new (DecideBot) })
+	RegisterRobot("/decide", func() (robot Robot) { return new(DecideBot) })
 }
 
 func (d DecideBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {
@@ -25,10 +25,10 @@ func (d DecideBot) Run(command *SlashCommand) (slashCommandImmediateReturn strin
 }
 
 func (d DecideBot) DeferredAction(command *SlashCommand) {
-	response := new (IncomingWebhook)
+	response := new(IncomingWebhook)
 	response.Channel = command.Channel_ID
 	response.Username = "Fate Bot"
-	response.Icon_Emoji   = ":ghost:"
+	response.Icon_Emoji = ":ghost:"
 	response.Unfurl_Links = true
 	response.Parse = "full"
 	text := strings.TrimSpace(command.Text)

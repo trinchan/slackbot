@@ -12,34 +12,34 @@ type SlashCommand struct {
 }
 
 type IncomingWebhook struct {
-	Channel      string `json:"channel"`
-	Username     string `json:"username"`
-	Text         string `json:"text"`
-	Icon_Emoji   string `json:"icon_emoji,omitempty"`
-	Icon_URL	 string `json:"icon_url,omitempty"`
+	Channel      string       `json:"channel"`
+	Username     string       `json:"username"`
+	Text         string       `json:"text"`
+	Icon_Emoji   string       `json:"icon_emoji,omitempty"`
+	Icon_URL     string       `json:"icon_url,omitempty"`
 	Attachments  []Attachment `json:"attachments,omitempty"`
-	Unfurl_Links bool   `json:"unfurl_links,omitempty"`
-	Parse        string `json:"parse,omitempty"`
+	Unfurl_Links bool         `json:"unfurl_links,omitempty"`
+	Parse        string       `json:"parse,omitempty"`
 }
 
 type Attachment struct {
-	Fallback string `json:"fallback"`
-	Pretext  string `json:"pretext,omitempty"`
-	Text     string `json:"text,omitempty"`
-	Color    string `json:"color,omitempty"`
+	Fallback string            `json:"fallback"`
+	Pretext  string            `json:"pretext,omitempty"`
+	Text     string            `json:"text,omitempty"`
+	Color    string            `json:"color,omitempty"`
 	Fields   []AttachmentField `json:fields,omitempty`
 }
 
 type AttachmentField struct {
 	Title string `json:"title"`
 	Value string `json:"value"`
-	Short bool `json:"short,omitempty"`
+	Short bool   `json:"short,omitempty"`
 }
 
 type Configuration struct {
 	Domain string `schema:domain"`
-	Port int `schema:"port"`
-	Token string `schema:"token"`
+	Port   int    `schema:"port"`
+	Token  string `schema:"token"`
 }
 
 type Robot interface {

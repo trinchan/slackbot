@@ -16,3 +16,7 @@ Add a config file (config.json) to the root directory of the project with the fo
 Dependencies
 ============
 Schema  - `go get github.com/gorilla/schema`
+
+Installation
+============
+`go get github.com/trinchan/slackbot-go`
