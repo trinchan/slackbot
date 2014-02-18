@@ -1,4 +1,4 @@
-slackbot-go
+slackbot
 ===========
 
 A framework for building slash commands for Slack in Go
