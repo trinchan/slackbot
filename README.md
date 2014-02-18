@@ -3,6 +3,16 @@ slackbot
 
 A framework for building slash commands for Slack in Go
 
+Dependencies
+============
+Schema  - `go get github.com/gorilla/schema`
+
+Installation
+============
+`go get github.com/trinchan/slackbot`
+
+Setup
+=====
 Add a config file (config.json) to the root directory of the project with the following format:
 
 ```json
@@ -12,14 +22,6 @@ Add a config file (config.json) to the root directory of the project with the fo
     "token": "{YOUR_SLACK_INCOMING_WEBHOOK_TOKEN}"
 }
 ```
-
-Dependencies
-============
-Schema  - `go get github.com/gorilla/schema`
-
-Installation
-============
-`go get github.com/trinchan/slackbot`
 
 Make sure you have [Incoming Webhooks](https://my.slack.com/services/new/incoming-webhook) enabled and you are using that integration token for your config.
 
