@@ -19,4 +19,4 @@ Schema  - `go get github.com/gorilla/schema`
 
 Installation
 ============
-`go get github.com/trinchan/slackbot-go`
+`go get github.com/trinchan/slackbot`
