@@ -3,7 +3,7 @@ slackbot-go
 
 A framework for building slash commands for Slack in Go
 
-Add a config file (config.json) with the following format:
+Add a config file to the root directory (config.json) with the following format:
 
 ```json
 {
