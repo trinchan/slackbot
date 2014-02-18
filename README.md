@@ -20,3 +20,7 @@ Schema  - `go get github.com/gorilla/schema`
 Installation
 ============
 `go get github.com/trinchan/slackbot`
+
+Make sure you have [Incoming Webhooks](https://my.slack.com/services/new/incoming-webhook) enabled and you are using that integration token for your config.
+
+For each slash command, be sure to add a corresponding entry in [Slash Commands](https://my.slack.com/services/new/slash-commands) to POST to server:port/slack of your slackbot setup. Note no trailing slash after /slack. 
