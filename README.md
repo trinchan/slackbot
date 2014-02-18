@@ -42,11 +42,11 @@ func init() {
 
 // All Robots must implement a Run command to be executed when the registered command is received.
 func (e ExampleBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {
-	// If you want to do some asynchronous work (like sending API calls to slack)
+	// If you (optionally) want to do some asynchronous work (like sending API calls to slack)
 	// you can put it in a go routine like this 
 	go e.DeferredAction(command)
-	// The string returned here will be shown only to the user who executed the command as a 
-	// message from slackbot.
+	// The string returned here will be shown only to the user who executed the command
+	// and will show up as a message from slackbot.
 	return "Text to be returned only to the user who made the command."
 }
 
