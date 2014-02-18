@@ -9,7 +9,7 @@ Schema  - `go get github.com/gorilla/schema`
 
 Installation
 ============
-`go get github.com/trinchan/slackbot`
+You can grab the source code using `go get github.com/trinchan/slackbot` and install like usual.
 
 Setup
 =====
