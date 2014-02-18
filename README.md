@@ -12,3 +12,8 @@ Add a config file (config.json) to the root directory of the project with the fo
     "token": "{YOUR_SLACK_INCOMING_WEBHOOK_TOKEN}"
 }
 ```
+
+Dependencies
+============
+Schema 
+`go get github.com/gorilla/schema`
