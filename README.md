@@ -7,8 +7,8 @@ Add a config file (config.json) with the following format:
 
 ```json
 {
-    "Domain": "{YOUR_SLACK_DOMAIN}",
-    "Port": {PORT_FOR_BOT},
-    "Token": "{YOUR_SLACK_INCOMING_WEBHOOK_TOKEN}"
+    "domain": "{YOUR_SLACK_DOMAIN}",
+    "port": {PORT_FOR_BOT},
+    "token": "{YOUR_SLACK_INCOMING_WEBHOOK_TOKEN}"
 }
 ```
