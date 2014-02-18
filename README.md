@@ -13,7 +13,7 @@ You can grab the source code using `go get github.com/trinchan/slackbot` and ins
 
 Setup
 =====
-Add a config file (config.json) to the root directory of the project with the following format:
+Create a config file (config.json) in a directory on your path or the executing directory with the following format:
 
 ```json
 {
