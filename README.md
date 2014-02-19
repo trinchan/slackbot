@@ -35,7 +35,9 @@ package robots
 
 type ExampleBot struct {
 }
-// Registers the bot with the server for command /example.
+
+// Registers the bot with the server for command /example. The second argument must be a 
+// function which returns an instance of the Robot
 func init() {
 	RegisterRobot("/example", func() (robot Robot) { return new(ExampleBot) })
 }
@@ -69,7 +71,7 @@ func (e ExampleBot) Description() (description string) {
 	// In addition to a Run method, each Robot must implement a Description method which
 	// is just a simple string describing what the Robot does. This is used in the included
 	// /c command which gives users a list of commands and descriptions
-	return "This is a description for example bot which will"
+	return "This is a description for example bot which will be displayed on /c"
 }
 ```
 
