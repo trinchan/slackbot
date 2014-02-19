@@ -13,7 +13,7 @@ You can grab the source code using `go get github.com/trinchan/slackbot` and ins
 
 Setup
 =====
-Create a config file (config.json) to the executing directory with the following format:
+Create a config file (config.json) with the following format:
 
 ```json
 {
@@ -79,6 +79,8 @@ Now just add a corresponding entry in [Slash Commands](https://my.slack.com/serv
 
 Running
 =======
+`slackbot -c {PATH_TO_CONFIG_FILE}`
+
 If you see output similar to below and you have the commands enabled in your Slack integration, you're ready to go!
 ```
 2014/02/18 10:55:07 Registered: /decide
