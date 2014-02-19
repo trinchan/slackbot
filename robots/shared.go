@@ -2,6 +2,7 @@ package robots
 
 import (
 	"encoding/json"
+	"flag"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -12,7 +13,9 @@ var Robots = make(map[string]func() Robot)
 var Config = new(Configuration)
 
 func init() {
-	config, err := ioutil.ReadFile("config.json")
+	flag.Parse()
+	configFile = flag.String("c", "config.json", "Config file (default ./config.json)")
+	config, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		log.Println("open config: ", err)
 	}
