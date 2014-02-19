@@ -17,12 +17,12 @@ func init() {
 	flag.Parse()
 	config, err := ioutil.ReadFile(*configFile)
 	if err != nil {
-		log.Println("open config: ", err)
+		log.Fatal("Error opening config: ", err)
 	}
 
 	err = json.Unmarshal(config, Config)
 	if err != nil {
-		log.Println("parse config: ", err)
+		log.Fatal("Error parsing config: ", err)
 	}
 }
 
