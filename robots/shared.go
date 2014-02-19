@@ -14,7 +14,7 @@ var Config = new(Configuration)
 
 func init() {
 	flag.Parse()
-	configFile := flag.String("c", "config.json", "Config file (default ./config.json)")
+	var configFile = flag.String("c", "config.json", "Config file (default ./config.json)")
 	config, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		log.Println("open config: ", err)
