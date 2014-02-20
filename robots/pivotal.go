@@ -1,7 +1,6 @@
 package robots
 import (
     "encoding/json"
-    "flag"
     "fmt"
     "io/ioutil"
     "log"
@@ -104,7 +103,7 @@ var PivotalConfig = new(PivotalConfiguration)
 
 // Loads the config file and registers the bot with the server for command /${1/(.+)/\L\1/g}.
 func init() {
-    configFile := filepath.Join(*ConfigDirectory, "pivotal.json")
+    configFile := filepath.Join(ConfigDirectory, "pivotal.json")
     if _, err := os.Stat(configFile); err == nil {
         config, err := ioutil.ReadFile(configFile)
         if err != nil {
@@ -117,7 +116,7 @@ func init() {
             return
         }
     } else {
-        log.Printf("WARNING: Could not find configuration file pivotal.json in %s", *ConfigDirectory)
+        log.Printf("WARNING: Could not find configuration file pivotal.json in %s", ConfigDirectory)
     }
     RegisterRobot("/pivotal", func() (robot Robot) { return new(PivotalBot) })
 }
