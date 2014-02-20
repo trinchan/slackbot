@@ -104,7 +104,9 @@ var PivotalConfig = new(PivotalConfiguration)
 
 // Loads the config file and registers the bot with the server for command /${1/(.+)/\L\1/g}.
 func init() {
-    configFile := filepath.Join(robots.Config.Directory, "pivotal.json")
+    var configDirectory = flag.String("c", ".", "Configuration directory (default .)")
+    flag.Parse()
+    configFile := filepath.Join(configDirectory, "pivotal.json")
     if _, err := os.Stat(configFile); err == nil {
         config, err := ioutil.ReadFile(configFile)
         if err != nil {
@@ -117,7 +119,7 @@ func init() {
             return
         }
     } else {
-        log.Printf("WARNING: Could not find configuration file pivotal.json in %s", robots.Config.Directory)
+        log.Printf("WARNING: Could not find configuration file pivotal.json in %s", configDirectory)
     }
     RegisterRobot("/pivotal", func() (robot Robot) { return new(PivotalBot) })
 }
