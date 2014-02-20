@@ -38,7 +38,7 @@ type AttachmentField struct {
 }
 
 type Configuration struct {
-	Domain string `schema:domain"`
+	Domain string `schema:"domain"`
 	Port   int    `schema:"port"`
 	Token  string `schema:"token"`
 }

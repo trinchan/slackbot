@@ -1,0 +1,47 @@
+<snippet>
+	<content>
+<![CDATA[
+package robots
+type ${1:${TM_FILENAME/(.*?)(\..+)/\u$1/}}Bot struct {
+}
+// Registers the bot with the server for command /example. The second argument must be a
+// function which returns an instance of the Robot
+func init() {
+    RegisterRobot("/${1/(.+)/\L\1/g}", func() (robot Robot) { return new($1Bot) })
+}
+
+// All Robots must implement a Run command to be executed when the registered command is received.
+func (r $1Bot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {
+    // If you (optionally) want to do some asynchronous work (like sending API calls to slack)
+    // you can put it in a go routine like this
+    go r.DeferredAction(command)
+    // The string returned here will be shown only to the user who executed the command
+    // and will show up as a message from slackbot.
+    return "Text to be returned only to the user who made the command."
+}
+
+func (r $1Bot) DeferredAction(command *SlashCommand) {
+    // Let's use the IncomingWebhook struct defined in definitions.go to form and send an
+    // IncomingWebhook message to slack that can be seen by everyone in the room. You can
+    // read the Slack API Docs (https://api.slack.com/) to know which fields are required, etc.
+    // You can also see what data is available from the command structure in definitions.go
+    response := new(IncomingWebhook)
+    response.Channel = command.Channel_ID
+    response.Username = "$1 Bot"
+    response.Text = "Hi there!"
+    response.Icon_Emoji = ":ghost:"
+    response.Unfurl_Links = true
+    response.Parse = "full"
+    MakeIncomingWebhookCall(response)
+}
+
+func (r $1Bot) Description() (description string) {
+    // In addition to a Run method, each Robot must implement a Description method which
+    // is just a simple string describing what the Robot does. This is used in the included
+    // /c command which gives users a list of commands and descriptions
+    return "This is a description for $1Bot which will be displayed on /c"
+}]]>
+	</content>
+	<scope>source.go</scope>
+	<description>Slackbot Robot: Inserts a Slackbot Robot template based on the current filename.</description>
+</snippet>
