@@ -1,13 +1,35 @@
 <snippet>
-	<content>
+    <content>
 <![CDATA[
 package robots
+import (
+    "encoding/json"
+    "io/ioutil"
+    "log"
+)
 type ${1:${TM_FILENAME/(.*?)(\..+)/\u$1/}}Bot struct {
 }
-// Registers the bot with the server for command /example. The second argument must be a
-// function which returns an instance of the Robot
+
+type $1Configuration struct {
+}
+
+var $1Config = new($1Configuration)
+
+// Loads the config file and registers the bot with the server for command /${1/(.+)/\L\1/g}.
 func init() {
-    RegisterRobot("/${1/(.+)/\L\1/g}", func() (robot Robot) { return new($1Bot) })
+    configFile := Config.Directory + "/${1/(.+)/\L\1/g}.json"
+    config, err := ioutil.ReadFile(configFile)
+    if err != nil {
+        log.Printf("ERROR: Error opening ${1/(.+)/\L\1/g} config: %s", err)
+    }
+
+    err = json.Unmarshal(config, $1Config)
+    if err != nil {
+        log.Printf("ERROR: Error parsing ${1/(.+)/\L\1/g} config: %s", err)
+    }
+    if err == nil {
+        RegisterRobot("/${1/(.+)/\L\1/g}", func() (robot Robot) { return new($1Bot) })
+    }
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.
@@ -41,7 +63,7 @@ func (r $1Bot) Description() (description string) {
     // /c command which gives users a list of commands and descriptions
     return "This is a description for $1Bot which will be displayed on /c"
 }]]>
-	</content>
-	<scope>source.go</scope>
-	<description>Slackbot Robot: Inserts a Slackbot Robot template based on the current filename.</description>
+    </content>
+    <scope>source.go</scope>
+    <description>Slackbot Robot: Inserts a Slackbot Robot template based on the current filename.</description>
 </snippet>
