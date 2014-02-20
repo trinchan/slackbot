@@ -20,9 +20,7 @@ var $1Config = new($1Configuration)
 
 // Loads the config file and registers the bot with the server for command /${1/(.+)/\L\1/g}.
 func init() {
-    var configDirectory = flag.String("c", ".", "Configuration directory (default .)")
-    flag.Parse()
-    configFile := filepath.Join(*configDirectory, "${1/(.+)/\L\1/g}.json")
+    configFile := filepath.Join(*ConfigDirectory, "${1/(.+)/\L\1/g}.json")
     if _, err := os.Stat(configFile); err == nil {
         config, err := ioutil.ReadFile(configFile)
         if err != nil {
@@ -35,7 +33,7 @@ func init() {
             return
         }
     } else {
-        log.Printf("WARNING: Could not find configuration file ${1/(.+)/\L\1/g}.json in %s", *configDirectory)
+        log.Printf("WARNING: Could not find configuration file ${1/(.+)/\L\1/g}.json in %s", *ConfigDirectory)
     }
     RegisterRobot("/${1/(.+)/\L\1/g}", func() (robot Robot) { return new($1Bot) })
 }

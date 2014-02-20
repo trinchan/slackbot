@@ -12,9 +12,10 @@ import (
 
 var Robots = make(map[string]func() Robot)
 var Config = new(Configuration)
+var ConfigDirectory string
 
 func init() {
-	var configDirectory = flag.String("c", ".", "Configuration directory (default .)")
+	flag.String(&ConfigDirectory, "c", ".", "Configuration directory (default .)")
 	flag.Parse()
 	configFile := filepath.Join(*configDirectory, "config.json")
 	config, err := ioutil.ReadFile(configFile)
