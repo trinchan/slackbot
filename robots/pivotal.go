@@ -2,6 +2,7 @@ package robots
 import (
     "encoding/json"
     "fmt"
+    "flag"
     "io/ioutil"
     "log"
     "net/http"
@@ -103,6 +104,7 @@ var PivotalConfig = new(PivotalConfiguration)
 
 // Loads the config file and registers the bot with the server for command /${1/(.+)/\L\1/g}.
 func init() {
+    flag.Parse()
     configFile := filepath.Join(*ConfigDirectory, "pivotal.json")
     if _, err := os.Stat(configFile); err == nil {
         config, err := ioutil.ReadFile(configFile)
