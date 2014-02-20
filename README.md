@@ -35,46 +35,73 @@ If you use [Sublime Text](http://www.sublimetext.com/) for development, then you
 
 ```go
 package robots
-
-type ExampleBot struct {
+import (
+    "encoding/json"
+    "flag"
+    "path/filepath"
+    "io/ioutil"
+    "log"
+    "os"
+)
+type TestBot struct {
 }
 
-// Registers the bot with the server for command /example. The second argument must be a 
-// function which returns an instance of the Robot
+type TestConfiguration struct {
+}
+
+var TestConfig = new(TestConfiguration)
+
+// Loads the config file and registers the bot with the server for command /test.
 func init() {
-	RegisterRobot("/example", func() (robot Robot) { return new(ExampleBot) })
+    flag.Parse()
+    configFile := filepath.Join(*ConfigDirectory, "test.json")
+    if _, err := os.Stat(configFile); err == nil {
+        config, err := ioutil.ReadFile(configFile)
+        if err != nil {
+            log.Printf("ERROR: Error opening test config: %s", err)
+            return
+        }
+        err = json.Unmarshal(config, TestConfig)
+        if err != nil {
+            log.Printf("ERROR: Error parsing test config: %s", err)
+            return
+        }
+    } else {
+        log.Printf("WARNING: Could not find configuration file test.json in %s", *ConfigDirectory)
+    }
+    RegisterRobot("/test", func() (robot Robot) { return new(TestBot) })
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.
-func (e ExampleBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {
-	// If you (optionally) want to do some asynchronous work (like sending API calls to slack)
-	// you can put it in a go routine like this 
-	go e.DeferredAction(command)
-	// The string returned here will be shown only to the user who executed the command
-	// and will show up as a message from slackbot.
-	return "Text to be returned only to the user who made the command."
+func (r TestBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {
+    // If you (optionally) want to do some asynchronous work (like sending API calls to slack)
+    // you can put it in a go routine like this
+    go r.DeferredAction(command)
+    // The string returned here will be shown only to the user who executed the command
+    // and will show up as a message from slackbot.
+    return "Text to be returned only to the user who made the command."
 }
 
-func (e ExampleBot) DeferredAction(command *SlashCommand) {
-    // Let's use the IncomingWebhook struct defined in definitions.go to form and send an 
-    // IncomingWebhook message to slack that can be seen by everyone in the room. You can 
-    // read the Slack API Docs (https://api.slack.com/) to know which fields are required, etc. 
+func (r TestBot) DeferredAction(command *SlashCommand) {
+    // Let's use the IncomingWebhook struct defined in definitions.go to form and send an
+    // IncomingWebhook message to slack that can be seen by everyone in the room. You can
+    // read the Slack API Docs (https://api.slack.com/) to know which fields are required, etc.
     // You can also see what data is available from the command structure in definitions.go
-	response := new(IncomingWebhook)
-	response.Channel = command.Channel_ID
-	response.Username = "Example Bot"
-	response.Text = "Hi there!"
-	response.Icon_Emoji = ":ghost:"
-	response.Unfurl_Links = true
-	response.Parse = "full"
-	MakeIncomingWebhookCall(response)
+    response := new(IncomingWebhook)
+    response.Channel = command.Channel_ID
+    response.Username = "Test Bot"
+    response.Text = "Hi there!"
+    response.Icon_Emoji = ":ghost:"
+    response.Unfurl_Links = true
+    response.Parse = "full"
+    MakeIncomingWebhookCall(response)
 }
 
-func (e ExampleBot) Description() (description string) {
-	// In addition to a Run method, each Robot must implement a Description method which
-	// is just a simple string describing what the Robot does. This is used in the included
-	// /c command which gives users a list of commands and descriptions
-	return "This is a description for example bot which will be displayed on /c"
+func (r TestBot) Description() (description string) {
+    // In addition to a Run method, each Robot must implement a Description method which
+    // is just a simple string describing what the Robot does. This is used in the included
+    // /c command which gives users a list of commands and descriptions
+    return "This is a description for TestBot which will be displayed on /c"
 }
 ```
 
