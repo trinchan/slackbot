@@ -30,7 +30,8 @@ func (w WikiBot) DeferredAction(command *SlashCommand) {
         response.Unfurl_Links = true
         response.Parse = "full"
         MakeIncomingWebhookCall(response)
-        resp, err := http.Get(fmt.Sprintf("http://www.google.com/search?q=(site:en.wikipedia.org+OR+site:ja.wikipedia.org)+%s&btnI", url.QueryEscape(text)))                                   
+        resp, err := http.Get(fmt.Sprintf("http://www.google.com/search?q=(site:en.wikipedia.org+OR+site:ja.wikipedia.org)+%s&btnI", url.QueryEscape(text)))
+        defer resp.Body.Close()
         if err != nil {
             response.Text = fmt.Sprintf("@%s: %s", command.User_Name, "Error getting wikipedia link from google :(")
         } else {
