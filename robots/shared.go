@@ -13,8 +13,9 @@ var Robots = make(map[string]func() Robot)
 var Config = new(Configuration)
 
 func init() {
-	var configFile = flag.String("c", "config.json", "Config file (default ./config.json)")
+	var configDirectory = flag.String("c", ".", "Configuration directory (default .)")
 	flag.Parse()
+	configFile := configDirectory + "/config.json"
 	config, err := ioutil.ReadFile(*configFile)
 	if err != nil {
 		log.Fatal("Error opening config: ", err)
@@ -24,6 +25,7 @@ func init() {
 	if err != nil {
 		log.Fatal("Error parsing config: ", err)
 	}
+	Config.Directory = configDirectory
 }
 
 func RegisterRobot(command string, RobotInitFunction func() Robot) {
