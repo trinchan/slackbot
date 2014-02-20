@@ -4,8 +4,10 @@
 package robots
 import (
     "encoding/json"
+    "path/filepath"
     "io/ioutil"
     "log"
+    "os"
 )
 type ${1:${TM_FILENAME/(.*?)(\..+)/\u$1/}}Bot struct {
 }
@@ -17,19 +19,22 @@ var $1Config = new($1Configuration)
 
 // Loads the config file and registers the bot with the server for command /${1/(.+)/\L\1/g}.
 func init() {
-    configFile := Config.Directory + "/${1/(.+)/\L\1/g}.json"
-    config, err := ioutil.ReadFile(configFile)
-    if err != nil {
-        log.Printf("ERROR: Error opening ${1/(.+)/\L\1/g} config: %s", err)
+    configFile := filepath.Join(Config.Directory, "${1/(.+)/\L\1/g}.json")
+    if _, err := os.Stat(configFile); err == nil {
+        config, err := ioutil.ReadFile(configFile)
+        if err != nil {
+            log.Printf("ERROR: Error opening ${1/(.+)/\L\1/g} config: %s", err)
+            return
+        }
+        err = json.Unmarshal(config, $1Config)
+        if err != nil {
+            log.Printf("ERROR: Error parsing ${1/(.+)/\L\1/g} config: %s", err)
+            return
+        }
+    } else {
+        log.Printf("WARNING: Could not find configuration file ${1/(.+)/\L\1/g}.json in %s", Config.Directory)
     }
-
-    err = json.Unmarshal(config, $1Config)
-    if err != nil {
-        log.Printf("ERROR: Error parsing ${1/(.+)/\L\1/g} config: %s", err)
-    }
-    if err == nil {
-        RegisterRobot("/${1/(.+)/\L\1/g}", func() (robot Robot) { return new($1Bot) })
-    }
+    RegisterRobot("/${1/(.+)/\L\1/g}", func() (robot Robot) { return new($1Bot) })
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.
