@@ -2,8 +2,8 @@ package robots
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -20,24 +20,24 @@ func (w WikiBot) Run(command *SlashCommand) (slashCommandImmediateReturn string)
 }
 
 func (w WikiBot) DeferredAction(command *SlashCommand) {
-	text := strings.TrimSpace(command.Text)
-	if text != "" {
-		response := new(IncomingWebhook)
-		response.Channel = command.Channel_ID
-		response.Username = "Wiki Bot"
-		response.Text = fmt.Sprintf("@%s: Searching google for wikipedias related to: %s", command.User_Name, text)
-		response.Icon_Emoji = ":ghost:"
-		response.Unfurl_Links = true
-		response.Parse = "full"
-		MakeIncomingWebhookCall(response)
-		resp, err := http.Get(fmt.Sprintf("http://www.google.com/search?q=(site:en.wikipedia.org+OR+site:ja.wikipedia.org)+%s&btnI", text))
-		if err != nil {
-			response.Text = fmt.Sprintf("@%s: %s", command.User_Name, "Error getting wikipedia link from google :(")
-		} else {
-			response.Text = fmt.Sprintf("@%s: %s", command.User_Name, resp.Request.URL.String())
-		}
-		MakeIncomingWebhookCall(response)
-	}
+    text := strings.TrimSpace(command.Text)
+    if text != "" {
+        response := new(IncomingWebhook)
+        response.Channel = command.Channel_ID
+        response.Username = "Wiki Bot"
+        response.Text = fmt.Sprintf("@%s: Searching google for wikis relating to: %s", command.User_Name, text)
+        response.Icon_Emoji = ":ghost:"
+        response.Unfurl_Links = true
+        response.Parse = "full"
+        MakeIncomingWebhookCall(response)
+        resp, err := http.Get(fmt.Sprintf("http://www.google.com/search?q=(site:en.wikipedia.org+OR+site:ja.wikipedia.org)+%s&btnI", url.QueryEscape(text)))                                   
+        if err != nil {
+            response.Text = fmt.Sprintf("@%s: %s", command.User_Name, "Error getting wikipedia link from google :(")
+        } else {
+            response.Text = fmt.Sprintf("@%s: %s", command.User_Name, resp.Request.URL.String())
+        }
+        MakeIncomingWebhookCall(response)
+    }
 }
 
 func (w WikiBot) Description() (description string) {
