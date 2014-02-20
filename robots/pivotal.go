@@ -106,7 +106,7 @@ var PivotalConfig = new(PivotalConfiguration)
 func init() {
     var configDirectory = flag.String("c", ".", "Configuration directory (default .)")
     flag.Parse()
-    configFile := filepath.Join(configDirectory, "pivotal.json")
+    configFile := filepath.Join(*configDirectory, "pivotal.json")
     if _, err := os.Stat(configFile); err == nil {
         config, err := ioutil.ReadFile(configFile)
         if err != nil {
@@ -119,7 +119,7 @@ func init() {
             return
         }
     } else {
-        log.Printf("WARNING: Could not find configuration file pivotal.json in %s", configDirectory)
+        log.Printf("WARNING: Could not find configuration file pivotal.json in %s", *configDirectory)
     }
     RegisterRobot("/pivotal", func() (robot Robot) { return new(PivotalBot) })
 }
