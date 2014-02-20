@@ -15,7 +15,7 @@ var Config = new(Configuration)
 var ConfigDirectory string
 
 func init() {
-	flag.StringVar(ConfigDirectory, "c", ".", "Configuration directory (default .)")
+	flag.StringVar(&ConfigDirectory, "c", ".", "Configuration directory (default .)")
 	flag.Parse()
 	configFile := filepath.Join(ConfigDirectory, "config.json")
 	config, err := ioutil.ReadFile(configFile)
