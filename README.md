@@ -29,7 +29,7 @@ For each slash command (including the default commands!), be sure to add a corre
 
 Adding Bots
 ===========
-Create a new go file in the robots directory.
+Create a new go file in the robots directory and, if necessary, a config file wherever you want to store the config files for your bots (all config files should be in the same directory and have names matching the bot name).
 
 If you use [Sublime Text](http://www.sublimetext.com/) for development, then you can simply add and use the included snippet to easily generate a template Robot based on the filename. Otherwise, refer to the template below.
 
@@ -109,7 +109,7 @@ Now just add a corresponding entry in [Slash Commands](https://my.slack.com/serv
 
 Running
 =======
-`slackbot -c {PATH_TO_CONFIG_FILE}`
+`slackbot -c {PATH_TO_CONFIG_FILE_DIRECTORY}`
 
 If you see output similar to below and you have the commands enabled in your Slack integration, you're ready to go!
 ```
