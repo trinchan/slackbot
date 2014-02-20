@@ -116,7 +116,7 @@ func init() {
             return
         }
     } else {
-        log.Printf("WARNING: Could not find configuration file pivotal.json in %s", ConfigDirectory)
+        log.Printf("WARNING: Could not find configuration file pivotal.json in %s", *ConfigDirectory)
     }
     RegisterRobot("/pivotal", func() (robot Robot) { return new(PivotalBot) })
 }
