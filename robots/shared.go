@@ -26,7 +26,6 @@ func init() {
 	if err != nil {
 		log.Fatal("Error parsing config: ", err)
 	}
-	Config.Directory = *configDirectory
 }
 
 func RegisterRobot(command string, RobotInitFunction func() Robot) {

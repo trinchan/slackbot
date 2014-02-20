@@ -41,7 +41,6 @@ type Configuration struct {
 	Domain string `schema:"domain"`
 	Port   int    `schema:"port"`
 	Token  string `schema:"token"`
-	Directory string `schema:"directory,omitempty"`
 }
 
 type Robot interface {

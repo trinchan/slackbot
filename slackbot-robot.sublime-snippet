@@ -4,6 +4,7 @@
 package robots
 import (
     "encoding/json"
+    "flag"
     "path/filepath"
     "io/ioutil"
     "log"
@@ -19,7 +20,9 @@ var $1Config = new($1Configuration)
 
 // Loads the config file and registers the bot with the server for command /${1/(.+)/\L\1/g}.
 func init() {
-    configFile := filepath.Join(robots.Config.Directory, "${1/(.+)/\L\1/g}.json")
+    var configDirectory = flag.String("c", ".", "Configuration directory (default .)")
+    flag.Parse()
+    configFile := filepath.Join(configDirectory, "${1/(.+)/\L\1/g}.json")
     if _, err := os.Stat(configFile); err == nil {
         config, err := ioutil.ReadFile(configFile)
         if err != nil {
@@ -32,7 +35,7 @@ func init() {
             return
         }
     } else {
-        log.Printf("WARNING: Could not find configuration file ${1/(.+)/\L\1/g}.json in %s", robots.Config.Directory)
+        log.Printf("WARNING: Could not find configuration file ${1/(.+)/\L\1/g}.json in %s", configDirectory)
     }
     RegisterRobot("/${1/(.+)/\L\1/g}", func() (robot Robot) { return new($1Bot) })
 }
