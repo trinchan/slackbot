@@ -20,6 +20,7 @@ type IncomingWebhook struct {
 	Attachments  []Attachment `json:"attachments,omitempty"`
 	Unfurl_Links bool         `json:"unfurl_links,omitempty"`
 	Parse        string       `json:"parse,omitempty"`
+	Link_Names   bool         `json:"link_names,omitempty"`
 }
 
 type Attachment struct {

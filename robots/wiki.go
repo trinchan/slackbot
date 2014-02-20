@@ -27,7 +27,7 @@ func (w WikiBot) DeferredAction(command *SlashCommand) {
         response.Username = "Wiki Bot"
         response.Text = fmt.Sprintf("@%s: Searching google for wikis relating to: %s", command.User_Name, text)
         response.Icon_Emoji = ":ghost:"
-        response.Unfurl_Links = true
+        response.Unfurl_Links = 1
         response.Parse = "full"
         MakeIncomingWebhookCall(response)
         resp, err := http.Get(fmt.Sprintf("http://www.google.com/search?q=(site:en.wikipedia.org+OR+site:ja.wikipedia.org)+%s&btnI", url.QueryEscape(text)))                                   
