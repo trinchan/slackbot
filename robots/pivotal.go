@@ -104,13 +104,13 @@ var PivotalConfig = new(PivotalConfiguration)
 // Loads the config file and registers the bot with the server for command /${1/(.+)/\L\1/g}.
 func init() {
     configFile := filepath.Join(Config.Directory, "pivotal.json")
-    if _, err := os.Stat(filename); err == nil {
+    if _, err := os.Stat(configFile); err == nil {
         config, err := ioutil.ReadFile(configFile)
         if err != nil {
             log.Printf("ERROR: Error opening pivotal config: %s", err)
             return
         }
-        err = json.Unmarshal(config, 1Config)
+        err = json.Unmarshal(config, PivotalConfig)
         if err != nil {
             log.Printf("ERROR: Error parsing pivotal config: %s", err)
             return
@@ -118,7 +118,7 @@ func init() {
     } else {
         log.Printf("WARNING: Could not find configuration file pivotal.json in %s", Config.Directory)
     }
-    RegisterRobot("/pivotal", func() (robot Robot) { return new($1Bot) })
+    RegisterRobot("/pivotal", func() (robot Robot) { return new(PivotalBot) })
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.
@@ -127,7 +127,7 @@ func (r PivotalBot) Run(command *SlashCommand) (slashCommandImmediateReturn stri
     // and will show up as a message from slackbot.
     text := strings.TrimSpace(command.Text)
     if text != "" {
-        client := &http.Client
+        client := &http.Client{}
         get_parameters := url.Values{}
         get_parameters.Set("query", text)
         req, err := http.NewRequest("GET", fmt.Sprintf("https://www.pivotaltracker.com/services/v5/projects/%d/search", PivotalConfig.Project_ID), nil)
