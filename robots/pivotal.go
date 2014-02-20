@@ -103,7 +103,7 @@ var PivotalConfig = new(PivotalConfiguration)
 
 // Loads the config file and registers the bot with the server for command /${1/(.+)/\L\1/g}.
 func init() {
-    configFile := filepath.Join(ConfigDirectory, "pivotal.json")
+    configFile := filepath.Join(*ConfigDirectory, "pivotal.json")
     if _, err := os.Stat(configFile); err == nil {
         config, err := ioutil.ReadFile(configFile)
         if err != nil {
