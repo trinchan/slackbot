@@ -29,7 +29,10 @@ For each slash command (including the default commands!), be sure to add a corre
 
 Adding Bots
 ===========
-Create a new file in the robots directory and follow the template below
+Create a new go file in the robots directory.
+
+If you use [Sublime Text](http://www.sublimetext.com/) for development, then you can simply add and use the included snippet to easily generate a template Robot based on the filename. Otherwise, refer to the template below.
+
 ```go
 package robots
 
