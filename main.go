@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gorilla/schema"
-	"github.com/trinchan/slackbot-go/robots"
+	"github.com/trinchan/slackbot/robots"
 	"io"
 	"log"
 	"net/http"
