@@ -149,23 +149,28 @@ func (r PivotalBot) ChangeState(new_state string, story_id string) (result strin
         put_parameters.Set("current_state", new_state + "ed")
         req, err := http.NewRequest("PUT", fmt.Sprintf("https://www.pivotaltracker.com/services/v5/projects/%d/stories/%s", PivotalConfig.Project_ID, story_id), nil)
         if err != nil {
-            return fmt.Sprintf("Error forming put request to Pivotal: %s", err)
+            return fmt.Sprintf("ERROR: Error forming put request to Pivotal: %s", err)
         }
         req.URL.RawQuery = put_parameters.Encode()
         req.Header.Add("X-TrackerToken", PivotalConfig.Token)
         resp, err := http.DefaultClient.Do(req)
         if err != nil {
-            return fmt.Sprintf("Error making put request to Pivotal: %s", err)
+            return fmt.Sprintf("ERROR: Error making put request to Pivotal: %s", err)
         }
         defer resp.Body.Close()
+        if resp.StatusCode != 200 {
+            message := fmt.Sprintf("ERROR: Non-200 Response from Pivotal API: %s", resp.Status)
+            log.Println(message)
+            return message
+        }
         contents, err := ioutil.ReadAll(resp.Body)
         if err != nil {
-            return fmt.Sprintf("Error reading response body from Pivotal: %s", err)
+            return fmt.Sprintf("ERROR: Error reading response body from Pivotal: %s", err)
         }
         story := new(Story)
         err = json.Unmarshal(contents, &story)
         if err != nil {
-            return fmt.Sprintf("Couldn't unmarshal pivotal story response into struct: %s", err)
+            return fmt.Sprintf("ERROR: Couldn't unmarshal pivotal story response into struct: %s", err)
         }
         return fmt.Sprintf("[%s <%s|#%d>] - %s", story.Current_State, story.URL, story.ID, story.Name)
 }
@@ -176,22 +181,27 @@ func (r PivotalBot) Query(query string) (result string) {
         req, err := http.NewRequest("GET", fmt.Sprintf("https://www.pivotaltracker.com/services/v5/projects/%d/search", PivotalConfig.Project_ID), nil)
         req.URL.RawQuery = get_parameters.Encode()
         if err != nil {
-            return fmt.Sprintf("Error forming get request to Pivotal: %s", err)
+            return fmt.Sprintf("ERROR: Error forming get request to Pivotal: %s", err)
         }
         req.Header.Add("X-TrackerToken", PivotalConfig.Token)
         resp, err := http.DefaultClient.Do(req)
         if err != nil {
-            return fmt.Sprintf("Error making get request to Pivotal: %s", err)
+            return fmt.Sprintf("ERROR: Error making get request to Pivotal: %s", err)
+        }
+        if resp.StatusCode != 200 {
+            message := fmt.Sprintf("ERROR: Non-200 Response from Pivotal API: %s", resp.Status)
+            log.Println(message)
+            return message
         }
         defer resp.Body.Close()
         contents, err := ioutil.ReadAll(resp.Body)
         if err != nil {
-            return fmt.Sprintf("Error reading response body from Pivotal: %s", err)
+            return fmt.Sprintf("ERROR: Error reading response body from Pivotal: %s", err)
         }
         searchResults := new(SearchResultContainer)
         err = json.Unmarshal(contents, &searchResults)
         if err != nil {
-            return fmt.Sprintf("Couldn't unmarshal pivotal response into struct: %s", err)
+            return fmt.Sprintf("ERROR: Couldn't unmarshal pivotal response into struct: %s", err)
         }
         output := ""
         if searchResults.Stories.Total_Hits > 0 {

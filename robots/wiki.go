@@ -32,7 +32,11 @@ func (w WikiBot) DeferredAction(command *SlashCommand) {
         MakeIncomingWebhookCall(response)
         resp, err := http.Get(fmt.Sprintf("http://www.google.com/search?q=(site:en.wikipedia.org+OR+site:ja.wikipedia.org)+%s&btnI", url.QueryEscape(text)))
         defer resp.Body.Close()
-        if err != nil {
+        if resp.StatusCode != 200 {
+            message := fmt.Sprintf("ERROR: Non-200 Response from Google: %s", resp.Status)
+            log.Println(message)
+            response.Text = fmt.Sprintf("@%s: %s", command.User_Name, message)
+        } else if err != nil {
             response.Text = fmt.Sprintf("@%s: %s", command.User_Name, "Error getting wikipedia link from google :(")
         } else {
             response.Text = fmt.Sprintf("@%s: %s", command.User_Name, resp.Request.URL.String())
