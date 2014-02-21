@@ -135,7 +135,7 @@ func (r PivotalBot) Run(command *SlashCommand) (slashCommandImmediateReturn stri
         switch pivotal_command {
             case "query":
                 return r.Query(query)
-            case "start", "unstart", "unschedule", "finish", "accept", "reject", "deliver":
+            case "start", "unstart", "finish", "accept", "reject", "deliver":
                 return r.ChangeState(pivotal_command, query)
         }
         return fmt.Sprintf("Unknown pivotal command: %s\n%s", pivotal_command, r.Description())
@@ -210,5 +210,5 @@ func (r PivotalBot) Description() (description string) {
     // In addition to a Run method, each Robot must implement a Description method which
     // is just a simple string describing what the Robot does. This is used in the included
     // /c command which gives users a list of commands and descriptions
-    return "Interact with the Pivotal API!\n\tUsage:\n\t\t/pivotal {start,unstart,finish,deliver,accept,reject,unschedule} {story_id}\n\t\t/pivotal query {search_query}\n\tExpected Response: List of stories"
+    return "Interact with the Pivotal API!\n\tUsage:\n\t\t/pivotal {start,unstart,finish,deliver,accept,reject} {story_id}\n\t\t/pivotal query {search_query}\n\tExpected Response: List of stories"
 }
