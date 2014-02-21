@@ -129,16 +129,57 @@ func (r PivotalBot) Run(command *SlashCommand) (slashCommandImmediateReturn stri
     // and will show up as a message from slackbot.
     text := strings.TrimSpace(command.Text)
     if text != "" {
-        client := &http.Client{}
+        split := strings.Split(text, " ")
+        pivotal_command := split[0]
+        query := strings.Join(split[1:], " ")
+        switch pivotal_command {
+            case "query":
+                return r.Query(query)
+            case "start", "unstart", "unschedule", "finish", "accept", "reject", "deliver":
+                return r.ChangeState(pivotal_command, query)
+        }
+        return fmt.Sprintf("Unknown pivotal command: %s\n%s", pivotal_command, r.Description())
+    } else {
+        return ""
+    }
+}
+
+func (r PivotalBot) ChangeState(new_state string, story_id string) (result string) {
+        put_parameters := url.Values{}
+        put_parameters.Set("current_state", new_state + "ed")
+        req, err := http.NewRequest("PUT", fmt.Sprintf("https://www.pivotaltracker.com/services/v5/projects/%d/stories/%s", PivotalConfig.Project_ID, story_id), nil)
+        if err != nil {
+            return fmt.Sprintf("Error forming put request to Pivotal: %s", err)
+        }
+        req.URL.RawQuery = put_parameters.Encode()
+        req.Header.Add("X-TrackerToken", PivotalConfig.Token)
+        resp, err := http.DefaultClient.Do(req)
+        if err != nil {
+            return fmt.Sprintf("Error making put request to Pivotal: %s", err)
+        }
+        defer resp.Body.Close()
+        contents, err := ioutil.ReadAll(resp.Body)
+        if err != nil {
+            return fmt.Sprintf("Error reading response body from Pivotal: %s", err)
+        }
+        story := new(Story)
+        err = json.Unmarshal(contents, &story)
+        if err != nil {
+            return fmt.Sprintf("Couldn't unmarshal pivotal story response into struct: %s", err)
+        }
+        return fmt.Sprintf("[%s <%s|#%d>] - %s", story.Current_State, story.URL, story.ID, story.Name)
+}
+
+func (r PivotalBot) Query(query string) (result string) {
         get_parameters := url.Values{}
-        get_parameters.Set("query", text)
+        get_parameters.Set("query", query)
         req, err := http.NewRequest("GET", fmt.Sprintf("https://www.pivotaltracker.com/services/v5/projects/%d/search", PivotalConfig.Project_ID), nil)
+        req.URL.RawQuery = get_parameters.Encode()
         if err != nil {
             return fmt.Sprintf("Error forming get request to Pivotal: %s", err)
         }
         req.Header.Add("X-TrackerToken", PivotalConfig.Token)
-        req.URL.RawQuery = get_parameters.Encode()
-        resp, err := client.Do(req)
+        resp, err := http.DefaultClient.Do(req)
         if err != nil {
             return fmt.Sprintf("Error making get request to Pivotal: %s", err)
         }
@@ -163,14 +204,11 @@ func (r PivotalBot) Run(command *SlashCommand) (slashCommandImmediateReturn stri
         } else {
             return strings.TrimSpace(output)
         }
-    } else {
-        return ""
-    }
 }
 
 func (r PivotalBot) Description() (description string) {
     // In addition to a Run method, each Robot must implement a Description method which
     // is just a simple string describing what the Robot does. This is used in the included
     // /c command which gives users a list of commands and descriptions
-    return "This is a description for PivotalBot which will be displayed on /c"
+    return "Interact wih the Pivotal API!\n\tUsage:\n\t\t/pivotal {start,unstart,finish,deliver,accept,reject,unschedule} {story_id}\n\t\t/pivotal query {search_query}\n\tExpected Response: List of stories"
 }
