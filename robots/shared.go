@@ -54,7 +54,7 @@ func MakeIncomingWebhookCall(payload *IncomingWebhook) error {
 	post_data.Set("token", Config.Token)
 
 	webhook.RawQuery = post_data.Encode()
-	resp, err = http.PostForm(webhook.String(), post_data)
+	resp, err := http.PostForm(webhook.String(), post_data)
 	if resp.StatusCode != 200 {
 		message := fmt.Sprintf("ERROR: Non-200 Response from Slack Incoming Webhook API: %s", resp.Status)
 		log.Println(message)
