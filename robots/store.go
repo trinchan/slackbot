@@ -55,7 +55,7 @@ func (r StoreBot) DeferredAction(command *SlashCommand) {
     response := new(IncomingWebhook)
     response.Channel = command.Channel_ID
     response.Username = "Store Bot"
-    response.Text = fmt.Sprintf(":famima: @group @%s wants to go to the store :famima:", command.User_Name)
+    response.Text = fmt.Sprintf("@group @%s wants to go to the store", command.User_Name)
     response.Icon_Emoji = ":famima:"
     response.Unfurl_Links = true
     response.Parse = "full"
