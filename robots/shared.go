@@ -59,6 +59,6 @@ func MakeIncomingWebhookCall(payload *IncomingWebhook) error {
 	if resp.StatusCode != 200 {
 		message := fmt.Sprintf("ERROR: Non-200 Response from Slack Incoming Webhook API: %s", resp.Status)
 		log.Println(message)
-    }
+	}
 	return err
 }
