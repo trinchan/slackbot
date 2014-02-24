@@ -2,6 +2,7 @@ package robots
 import (
     "encoding/json"
     "flag"
+    "fmt"
     "path/filepath"
     "io/ioutil"
     "log"
