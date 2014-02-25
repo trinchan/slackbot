@@ -54,18 +54,16 @@ func (r BijinBot) DeferredAction(command *SlashCommand) {
 	response.Unfurl_Links = true
 
 	rand.Seed(time.Now().UTC().UnixNano())
-	var t time.Time
+	t := time.Now()
 	if BijinConfig.Timezone != "" {
 		loc, err := time.LoadLocation(BijinConfig.Timezone)
 		if err == nil {
-			t = time.Now().In(loc)
+			t = t.In(loc)
 		} else {
-			t = time.Now()
 			response.Text = fmt.Sprintf("ERROR: Unknown timezone (%s) - Serving UTC", BijinConfig.Timezone)
 			MakeIncomingWebhookCall(response)
 		}
 	} else {
-		t = time.Now()
 		response.Text = fmt.Sprintf("WARNING: No timezone set - Serving UTC")
 		MakeIncomingWebhookCall(response)
 	}
