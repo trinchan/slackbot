@@ -71,7 +71,7 @@ func (r BijinBot) DeferredAction(command *SlashCommand) {
 	hours := fmt.Sprintf("%02d", t.Hour())
 	minutes := fmt.Sprintf("%02d", t.Minute())
 	region, link := GetLink(strings.ToLower(strings.TrimSpace(command.Text)))
-	response.Text = fmt.Sprintf("<@%s|%s> Here's your (%s) <%s%s%s.jpg|%s:%s 美人> ", command.User_ID, command.User_Name, strings.ToTitle(region), link, hours, minutes, hours, minutes)
+	response.Text = fmt.Sprintf("<@%s|%s> Here's your <%s%s%s.jpg|%s:%s 美人 (%s)> ", command.User_ID, command.User_Name, link, hours, minutes, hours, minutes, strings.ToTitle(region))
 	MakeIncomingWebhookCall(response)
 }
 
