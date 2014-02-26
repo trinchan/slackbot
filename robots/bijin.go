@@ -85,7 +85,7 @@ func GetLink(region string) (string, string) {
 		"sendai":    "http://www.bijint.com/sendai/tokei_images/",
 		"akita":     "http://www.bijint.com/akita/tokei_images/",
 		"gunma":     "http://www.bijint.com/gunma/tokei_images/",
-		"niigata":   "http://www.bijint.com/niiagata/tokei_images/",
+		"niigata":   "http://www.bijint.com/niigata/tokei_images/",
 		"kanazawa":  "http://www.bijint.com/kanazawa/tokei_images/",
 		"fukui":     "http://www.bijint.com/fukui/tokei_images/",
 		"nagoya":    "http://www.bijint.com/nagoya/tokei_images/",
