@@ -119,7 +119,7 @@ func GetLink(region string) (string, string) {
 		"asahi":     "http://www.bijint.com/tv-asahi/tokei_images/",
 		"circuit":   "http://www.bijint.com/cc/tokei_images/",
 		"hanayome":  "http://www.bijint.com/hanayome/tokei_images/",
-		"waseda":    "http://www.bijint.com/waseda/tokei_images/",
+		"waseda":    "http://www.bijint.com/wasedastyle/tokei_images/",
 	}
 	if link, ok := links[region]; ok {
 		return region, link
