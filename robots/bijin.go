@@ -78,8 +78,8 @@ func (r BijinBot) DeferredAction(command *SlashCommand) {
 func GetLink(region string) (string, string) {
 	links := map[string]string{"japan": "http://www.bijint.com/jp/tokei_images/",
 		"clk":       "http://www.bijint.com/jp/img/clk/",
-		"2012":      "http://www.bijint.com/2012jp/",
-		"2011":      "http://www.bijint.com/2011jp/",
+		"2012":      "http://www.bijint.com/2012jp/tokei_images/",
+		"2011":      "http://www.bijint.com/2011jp/tokei_images/",
 		"tokyo":     "http://www.bijint.com/tokyo/tokei_images/",
 		"hokkaido":  "http://www.bijint.com/hokkaido/tokei_images/",
 		"sendai":    "http://www.bijint.com/sendai/tokei_images/",
