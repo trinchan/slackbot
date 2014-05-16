@@ -8,7 +8,11 @@ type SlashCommand struct {
 	User_ID      string `schema:"user_id"`
 	User_Name    string `schema:"user_name"`
 	Command      string `schema:"command"`
-	Text         string `schema:"text"`
+	Text         string `schema:"text,omitempty"`
+    Trigger_Word string `schema:"trigger_word,omitempty"`
+    Team_Domain  string `schema:"team_domain,omitempty"`
+    Service_ID   string `schema:"service_id,omitempty"`
+    Timestamp    float64 `schema:"timestamp,omitempty"`
 }
 
 type IncomingWebhook struct {
