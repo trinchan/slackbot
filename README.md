@@ -27,7 +27,7 @@ Make sure you have [Incoming Webhooks](https://my.slack.com/services/new/incomin
 
 Each bot you make will respond to a corresponding [Slash Command](https://my.slack.com/services/new/slash-commands) and [Outgoing Webhook](https://gengo.slack.com/services/new/outgoing-webhook).
 
-For each slash command (including the default commands!), be sure to add a corresponding entry in [Slash Commands](https://my.slack.com/services/new/slash-commands) to POST to server:port/slack of your slackbot setup. Note no trailing slash after /slack. Also make sure to add server:port/slack_hook to your [Outgoing Webhook](https://gengo.slack.com/services/new/outgoing-webhook) integration. The bot will respond to commands of the form `/bot param param param` and `{trigger_word}: bot param param param` Your trigger word must end in a colon and space (e.g. `slackbot: `) and typing `slackbot: ping`) will trigger the Ping bot.
+For each slash command (including the default commands!), be sure to add a corresponding entry in [Slash Commands](https://my.slack.com/services/new/slash-commands) to POST to server:port/slack of your slackbot setup. Note no trailing slash after /slack. Also make sure to add server:port/slack_hook to your [Outgoing Webhook](https://gengo.slack.com/services/new/outgoing-webhook) integration. The bot will respond to commands of the form `/bot param param param` and `{trigger_word}: bot param param param` Your trigger word must end in a colon and space (e.g. `slackbot: `) and typing `slackbot: ping` will trigger the Ping bot.
 
 TODO: Clean up trigger word logic and fix when realtime API released.
 
