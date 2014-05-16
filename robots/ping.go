@@ -8,7 +8,7 @@ type PingBot struct {
 }
 
 func init() {
-	RegisterRobot("/ping", func() (robot Robot) { return new(PingBot) })
+	RegisterRobot("ping", func() (robot Robot) { return new(PingBot) })
 }
 
 func (p PingBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {

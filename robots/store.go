@@ -34,7 +34,7 @@ func init() {
     } else {
         log.Printf("WARNING: Could not find configuration file store.json in %s", *ConfigDirectory)
     }
-    RegisterRobot("/store", func() (robot Robot) { return new(StoreBot) })
+    RegisterRobot("store", func() (robot Robot) { return new(StoreBot) })
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.

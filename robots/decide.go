@@ -11,7 +11,7 @@ type DecideBot struct {
 }
 
 func init() {
-	RegisterRobot("/decide", func() (robot Robot) { return new(DecideBot) })
+	RegisterRobot("decide", func() (robot Robot) { return new(DecideBot) })
 }
 
 func (d DecideBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {

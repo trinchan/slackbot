@@ -4,7 +4,7 @@ type RobotsBot struct {
 }
 
 func init() {
-	RegisterRobot("/c", func() (robot Robot) { return new(RobotsBot) })
+	RegisterRobot("c", func() (robot Robot) { return new(RobotsBot) })
 }
 
 func (r RobotsBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {

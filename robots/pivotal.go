@@ -121,7 +121,7 @@ func init() {
 	} else {
 		log.Printf("WARNING: Could not find configuration file pivotal.json in %s", *ConfigDirectory)
 	}
-	RegisterRobot("/pivotal", func() (robot Robot) { return new(PivotalBot) })
+	RegisterRobot("pivotal", func() (robot Robot) { return new(PivotalBot) })
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.

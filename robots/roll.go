@@ -12,7 +12,7 @@ type RollBot struct {
 }
 
 func init() {
-	RegisterRobot("/roll", func() (robot Robot) { return new(RollBot) })
+	RegisterRobot("roll", func() (robot Robot) { return new(RollBot) })
 }
 
 func (roll RollBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {

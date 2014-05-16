@@ -12,7 +12,7 @@ type WikiBot struct {
 }
 
 func init() {
-	RegisterRobot("/wiki", func() (robot Robot) { return new(WikiBot) })
+	RegisterRobot("wiki", func() (robot Robot) { return new(WikiBot) })
 }
 
 func (w WikiBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {

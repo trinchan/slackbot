@@ -39,7 +39,7 @@ func init() {
 	} else {
 		log.Printf("WARNING: Could not find configuration file bijin.json in %s", *ConfigDirectory)
 	}
-	RegisterRobot("/bijin", func() (robot Robot) { return new(BijinBot) })
+	RegisterRobot("bijin", func() (robot Robot) { return new(BijinBot) })
 }
 
 func (r BijinBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {

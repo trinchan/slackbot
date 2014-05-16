@@ -36,7 +36,7 @@ func init() {
     } else {
         log.Printf("WARNING: Could not find configuration file ${1/(.+)/\L\1/g}.json in %s", *ConfigDirectory)
     }
-    RegisterRobot("/${1/(.+)/\L\1/g}", func() (robot Robot) { return new($1Bot) })
+    RegisterRobot("${1/(.+)/\L\1/g}", func() (robot Robot) { return new($1Bot) })
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.
