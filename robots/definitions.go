@@ -32,7 +32,7 @@ type Attachment struct {
 	Pretext  string            `json:"pretext,omitempty"`
 	Text     string            `json:"text,omitempty"`
 	Color    string            `json:"color,omitempty"`
-	Fields   []AttachmentField `json:fields,omitempty`
+	Fields   []AttachmentField `json:"fields,omitempty"`
 }
 
 type AttachmentField struct {
