@@ -80,7 +80,6 @@ func StartServer() {
 func GetRobot(command string) robots.Robot {
 	if RobotInitFunction, ok := robots.Robots[command]; ok {
 		return RobotInitFunction()
-	} else {
-		return nil
 	}
+	return nil
 }
