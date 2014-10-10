@@ -2,13 +2,14 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/gorilla/schema"
-	"github.com/trinchan/slackbot/robots"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/gorilla/schema"
+	"github.com/trinchan/slackbot/robots"
 )
 
 func main() {
