@@ -2,14 +2,16 @@
     <content>
 <![CDATA[
 package robots
+
 import (
     "encoding/json"
     "flag"
-    "path/filepath"
     "io/ioutil"
     "log"
     "os"
+    "path/filepath"
 )
+
 type ${1:${TM_FILENAME/(.*?)(\..+)/\u$1/}}Bot struct {
 }
 
