@@ -60,7 +60,7 @@ func (r StoreBot) DeferredAction(p *Payload) {
 		IconEmoji:   ":famima:",
 		Text:        fmt.Sprintf("@group @%s wants to go to the store", p.UserName),
 		UnfurlLinks: true,
-		Parse:       "full",
+		Parse:       ParseStyleFull,
 	}
 	MakeIncomingWebhookCall(response)
 }
