@@ -36,7 +36,7 @@ func (d DecideBot) DeferredAction(p *Payload) {
 	if text != "" {
 		split := strings.Split(text, " ")
 		response.Text = fmt.Sprintf("@%s: Deciding between: (%s)", p.UserName, strings.Join(split, ", "))
-		MakeIncomingWebhookCall(response)
+		go MakeIncomingWebhookCall(response)
 		response.Text = fmt.Sprintf("@%s: Decided on: %s", p.UserName, Decide(split))
 		MakeIncomingWebhookCall(response)
 	}

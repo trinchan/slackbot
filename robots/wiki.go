@@ -32,7 +32,7 @@ func (w WikiBot) DeferredAction(p *Payload) {
 			Parse:       ParseStyleFull,
 		}
 
-		MakeIncomingWebhookCall(response)
+		go MakeIncomingWebhookCall(response)
 		resp, err := http.Get(fmt.Sprintf("http://www.google.com/search?q=(site:en.wikipedia.org+OR+site:ja.wikipedia.org)+%s&btnI", url.QueryEscape(text)))
 		defer resp.Body.Close()
 		if resp.StatusCode != http.StatusOK {
