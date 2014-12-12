@@ -39,14 +39,16 @@ If you use [Sublime Text](http://www.sublimetext.com/) for development, then you
 
 ```go
 package robots
+
 import (
     "encoding/json"
     "flag"
-    "path/filepath"
     "io/ioutil"
     "log"
     "os"
+    "path/filepath"
 )
+
 type TestBot struct {
 }
 
@@ -73,31 +75,32 @@ func init() {
     } else {
         log.Printf("WARNING: Could not find configuration file test.json in %s", *ConfigDirectory)
     }
-    RegisterRobot("test", func() (robot Robot) { return new(TestBot) })
+    RegisterRobot("test", new(TestBot))
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.
-func (r TestBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {
+func (r TestBot) Run(p *Payload) string {
     // If you (optionally) want to do some asynchronous work (like sending API calls to slack)
     // you can put it in a go routine like this
-    go r.DeferredAction(command)
+    go r.DeferredAction(p)
     // The string returned here will be shown only to the user who executed the command
     // and will show up as a message from slackbot.
     return "Text to be returned only to the user who made the command."
 }
 
-func (r TestBot) DeferredAction(command *SlashCommand) {
+func (r TestBot) DeferredAction(p *Payload) {
     // Let's use the IncomingWebhook struct defined in definitions.go to form and send an
     // IncomingWebhook message to slack that can be seen by everyone in the room. You can
     // read the Slack API Docs (https://api.slack.com/) to know which fields are required, etc.
     // You can also see what data is available from the command structure in definitions.go
-    response := new(IncomingWebhook)
-    response.Channel = command.Channel_ID
-    response.Username = "Test Bot"
-    response.Text = "Hi there!"
-    response.IconEmoji = ":ghost:"
-    response.UnfurlLinks = true
-    response.Parse = "full"
+    response := &IncomingWebhook{
+        Channel:     p.ChannelID,
+        Username:    "Test Bot",
+        Text:        "Hi there!",
+        IconEmoji:   ":ghost:",
+        UnfurlLinks: true,
+        Parse:       ParseStyleFull,
+    }
     MakeIncomingWebhookCall(response)
 }
 
@@ -107,6 +110,7 @@ func (r TestBot) Description() (description string) {
     // /c command which gives users a list of commands and descriptions
     return "This is a description for TestBot which will be displayed on /c"
 }
+
 ```
 
 Now just add a corresponding entry in [Slash Commands](https://my.slack.com/services/new/slash-commands) to POST to server:port/slack of your slackbot setup. Note no trailing slash after /slack. The outgoing wehook command will automatically work as expected.
