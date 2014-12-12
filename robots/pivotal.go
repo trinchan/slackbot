@@ -17,8 +17,8 @@ type PivotalBot struct {
 }
 
 type PivotalConfiguration struct {
-	Project_ID int    `json:"project_id"`
-	Token      string `json:"token"`
+	ProjectID int    `json:"project_id"`
+	Token     string `json:"token"`
 }
 type SearchResultContainer struct {
 	Epics   EpicsSearchResult   `json:epics`
@@ -27,67 +27,67 @@ type SearchResultContainer struct {
 }
 
 type EpicsSearchResult struct {
-	Total_Hits           int    `json:"total_hits"`
-	Epics                []Epic `json:"epics"`
-	Total_Hits_With_Done int    `json:"total_hits_with_done,omitempty"`
+	TotalHits         int    `json:"total_hits"`
+	Epics             []Epic `json:"epics"`
+	TotalHitsWithDone int    `json:"total_hits_with_done,omitempty"`
 }
 
 type StoriesSearchResult struct {
-	Total_Hits             int     `json:"total_hits"`
-	Total_Hits_With_Done   int     `json:"total_hits_with_done,omitempty"`
-	Stories                []Story `json:"stories"`
-	Total_Points           int     `json:"total_points"`
-	Total_Points_Completed int     `json:"total_points_completed,omitempty"`
+	TotalHits            int     `json:"total_hits"`
+	TotalHitsWithDone    int     `json:"total_hits_with_done,omitempty"`
+	Stories              []Story `json:"stories"`
+	TotalPoints          int     `json:"total_points"`
+	TotalPointsCompleted int     `json:"total_points_completed,omitempty"`
 }
 
 type Label struct {
-	Kind       string `json:"kind"`
-	Created_At string `json:"created_at"`
-	Updated_At string `json:"updated_at"`
-	Name       string `json:"name"`
-	Project_ID int    `json:"project_id"`
-	ID         int    `json:"id"`
+	Kind      string `json:"kind"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
+	Name      string `json:"name"`
+	ProjectID int    `json:"project_id"`
+	ID        int    `json:"id"`
 }
 
 type Epic struct {
-	Comment_IDs []int  `json:"comment_ids"`
+	CommentIDs  []int  `json:"comment_ids"`
 	Name        string `json:"name"`
 	Kind        string `json:"kind"`
 	ID          int    `json:"id"`
-	Before_ID   int    `json:"before_id"`
-	Updated_At  string `json:"updated_at"`
+	BeforeID    int    `json:"before_id"`
+	UpdatedAt   string `json:"updated_at"`
 	URL         string `json:"url"`
-	Project_ID  int    `json:"project_id"`
-	Label_ID    int    `json:"label_id"`
-	Created_At  string `json:"created_at"`
+	ProjectID   int    `json:"project_id"`
+	LabelID     int    `json:"label_id"`
+	CreatedAt   string `json:"created_at"`
 	Description string `json:"description"`
-	After_ID    int    `json:"after_id"`
+	AfterID     int    `json:"after_id"`
 }
 
 type Story struct {
-	Comment_IDs              []int   `json:"comment_ids,omitempty"`
-	Current_State            string  `json:"current_state"`
-	Deadline                 string  `json:"deadline,omitempty"`
-	Requested_By_ID          int     `json:"requested_by_id,omitempty"`
-	Integration_ID           int     `json:"integration_id,omitempty"`
-	Name                     string  `json:"name"`
-	Owned_By_ID              int     `json:"owned_by_id,omitempty"`
-	Kind                     string  `json:"kind"`
-	Labels                   []Label `json:"labels,omitempty"`
-	ID                       int     `json:"id"`
-	Planned_Iteration_Number int     `json:"planned_iteration_number,omitempty"`
-	External_ID              string  `json:"external_id,omitempty"`
-	Estimate                 int     `json:"estimate"`
-	Task_IDs                 []int   `json:"task_ids,omitempty"`
-	Updated_At               string  `json:"updated_at"`
-	URL                      string  `json:"url"`
-	Project_ID               int     `json:"project_id"`
-	Story_Type               string  `json:"story_type"`
-	Accepted_At              string  `json:"accepted_at"`
-	Follower_IDs             []int   `json:"follower_ids,omitempty"`
-	Created_At               string  `json:"created_at"`
-	Description              string  `json:"description"`
-	Owner_IDs                []int   `json:"owner_ids,omitempty"`
+	CommentIDs             []int   `json:"comment_ids,omitempty"`
+	CurrentState           string  `json:"current_state"`
+	Deadline               string  `json:"deadline,omitempty"`
+	RequestedByID          int     `json:"requested_by_id,omitempty"`
+	IntegrationID          int     `json:"integration_id,omitempty"`
+	Name                   string  `json:"name"`
+	OwnedByID              int     `json:"owned_by_id,omitempty"`
+	Kind                   string  `json:"kind"`
+	Labels                 []Label `json:"labels,omitempty"`
+	ID                     int     `json:"id"`
+	PlannedIterationNumber int     `json:"planned_iteration_number,omitempty"`
+	External_ID            string  `json:"external_id,omitempty"`
+	Estimate               int     `json:"estimate"`
+	TaskIDs                []int   `json:"task_ids,omitempty"`
+	Updated_At             string  `json:"updated_at"`
+	URL                    string  `json:"url"`
+	ProjectID              int     `json:"project_id"`
+	StoryType              string  `json:"story_type"`
+	Accepted_At            string  `json:"accepted_at"`
+	FollowerIDs            []int   `json:"follower_ids,omitempty"`
+	CreatedAt              string  `json:"created_at"`
+	Description            string  `json:"description"`
+	OwnerIDs               []int   `json:"owner_ids,omitempty"`
 }
 
 type Task struct {
@@ -95,9 +95,9 @@ type Task struct {
 	Kind        string `json:"kind"`
 	ID          int    `json:"id"`
 	Position    int    `json:"position"`
-	Updated_At  string `json:"updated_at"`
-	Story_ID    int    `json:"story_id"`
-	Created_At  string `json:"created_at"`
+	UpdatedAt   string `json:"updated_at"`
+	StoryID     int    `json:"story_id"`
+	CreatedAt   string `json:"created_at"`
 	Description string `json:"description"`
 }
 
@@ -121,45 +121,45 @@ func init() {
 	} else {
 		log.Printf("WARNING: Could not find configuration file pivotal.json in %s", *ConfigDirectory)
 	}
-	RegisterRobot("pivotal", func() (robot Robot) { return new(PivotalBot) })
+	RegisterRobot("pivotal", new(PivotalBot))
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.
-func (r PivotalBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {
+func (r PivotalBot) Run(p *Payload) (s string) {
 	// The string returned here will be shown only to the user who executed the command
 	// and will show up as a message from slackbot.
-	text := strings.TrimSpace(command.Text)
+	text := strings.TrimSpace(p.Text)
 	if text != "" {
 		split := strings.Split(text, " ")
-		pivotal_command := split[0]
+		pc := split[0]
 		query := strings.Join(split[1:], " ")
-		switch pivotal_command {
+		switch pc {
 		case "query":
 			return r.Query(query)
 		case "start", "unstart", "finish", "accept", "reject", "deliver":
-			return r.ChangeState(pivotal_command, query)
+			return r.ChangeState(pc, query)
 		}
-		return fmt.Sprintf("Unknown pivotal command: %s\n%s", pivotal_command, r.Description())
+		return fmt.Sprintf("Unknown pivotal command: %s\n%s", pc, r.Description())
 	} else {
 		return ""
 	}
 }
 
-func (r PivotalBot) ChangeState(new_state string, story_id string) (result string) {
-	put_parameters := url.Values{}
-	put_parameters.Set("current_state", new_state+"ed")
-	req, err := http.NewRequest("PUT", fmt.Sprintf("https://www.pivotaltracker.com/services/v5/projects/%d/stories/%s", PivotalConfig.Project_ID, story_id), nil)
+func (r PivotalBot) ChangeState(state string, storyID string) (result string) {
+	params := url.Values{}
+	params.Set("current_state", state+"ed")
+	req, err := http.NewRequest("PUT", fmt.Sprintf("https://www.pivotaltracker.com/services/v5/projects/%d/stories/%s", PivotalConfig.ProjectID, storyID), nil)
 	if err != nil {
 		return fmt.Sprintf("ERROR: Error forming put request to Pivotal: %s", err)
 	}
-	req.URL.RawQuery = put_parameters.Encode()
+	req.URL.RawQuery = params.Encode()
 	req.Header.Add("X-TrackerToken", PivotalConfig.Token)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return fmt.Sprintf("ERROR: Error making put request to Pivotal: %s", err)
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		message := fmt.Sprintf("ERROR: Non-200 Response from Pivotal API: %s", resp.Status)
 		log.Println(message)
 		return message
@@ -168,19 +168,19 @@ func (r PivotalBot) ChangeState(new_state string, story_id string) (result strin
 	if err != nil {
 		return fmt.Sprintf("ERROR: Error reading response body from Pivotal: %s", err)
 	}
-	story := new(Story)
-	err = json.Unmarshal(contents, &story)
+	s := Story{}
+	err = json.Unmarshal(contents, &s)
 	if err != nil {
 		return fmt.Sprintf("ERROR: Couldn't unmarshal pivotal story response into struct: %s", err)
 	}
-	return fmt.Sprintf("[%s <%s|#%d>] - %s", story.Current_State, story.URL, story.ID, story.Name)
+	return fmt.Sprintf("[%s <%s|#%d>] - %s", s.CurrentState, s.URL, s.ID, s.Name)
 }
 
 func (r PivotalBot) Query(query string) (result string) {
-	get_parameters := url.Values{}
-	get_parameters.Set("query", query)
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://www.pivotaltracker.com/services/v5/projects/%d/search", PivotalConfig.Project_ID), nil)
-	req.URL.RawQuery = get_parameters.Encode()
+	params := url.Values{}
+	params.Set("query", query)
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://www.pivotaltracker.com/services/v5/projects/%d/search", PivotalConfig.ProjectID), nil)
+	req.URL.RawQuery = params.Encode()
 	if err != nil {
 		return fmt.Sprintf("ERROR: Error forming get request to Pivotal: %s", err)
 	}
@@ -199,15 +199,15 @@ func (r PivotalBot) Query(query string) (result string) {
 	if err != nil {
 		return fmt.Sprintf("ERROR: Error reading response body from Pivotal: %s", err)
 	}
-	searchResults := new(SearchResultContainer)
+	searchResults := SearchResultContainer{}
 	err = json.Unmarshal(contents, &searchResults)
 	if err != nil {
 		return fmt.Sprintf("ERROR: Couldn't unmarshal pivotal response into struct: %s", err)
 	}
 	output := ""
-	if searchResults.Stories.Total_Hits > 0 {
+	if searchResults.Stories.TotalHits > 0 {
 		for _, story := range searchResults.Stories.Stories {
-			output = output + (fmt.Sprintf("[%s <https://www.pivotaltracker.com/s/projects/%d/stories/%d|#%d>] - %s", story.Current_State, story.Project_ID, story.ID, story.ID, story.Name)) + "\n"
+			output = output + (fmt.Sprintf("[%s <https://www.pivotaltracker.com/s/projects/%d/stories/%d|#%d>] - %s", story.CurrentState, story.ProjectID, story.ID, story.ID, story.Name)) + "\n"
 		}
 	}
 	if output == "" {

@@ -13,7 +13,64 @@ import (
 	"time"
 )
 
+type Info struct {
+	Pic string
+	Bio string
+}
+
+const infoTempl = "http://base-generate.bijint.com/%s/"
+const picTempl = "http://www.bijint.com/%s/tokei_images/"
+const bTempl = "http://www.bijint.com/%s/"
+
+var links = map[string]Info{
+	"japan":     Info{Pic: fmt.Sprintf(picTempl, "jp")},
+	"clk":       Info{Pic: fmt.Sprintf(bTempl, "jp/img/clk")},
+	"2012":      Info{Pic: fmt.Sprintf(picTempl, "2012jp")},
+	"2011":      Info{Pic: fmt.Sprintf(picTempl, "2011jp")},
+	"tokyo":     Info{Pic: fmt.Sprintf(picTempl, "tokyo")},
+	"hokkaido":  Info{Pic: fmt.Sprintf(picTempl, "hokkaido")},
+	"sendai":    Info{Pic: fmt.Sprintf(picTempl, "sendai")},
+	"akita":     Info{Pic: fmt.Sprintf(picTempl, "akita")},
+	"gunma":     Info{Pic: fmt.Sprintf(picTempl, "gunma")},
+	"niigata":   Info{Pic: fmt.Sprintf(picTempl, "niigata")},
+	"kanazawa":  Info{Pic: fmt.Sprintf(picTempl, "kanazawa")},
+	"fukui":     Info{Pic: fmt.Sprintf(picTempl, "fukui")},
+	"nagoya":    Info{Pic: fmt.Sprintf(picTempl, "nagoya")},
+	"kyoto":     Info{Pic: fmt.Sprintf(picTempl, "kyoto")},
+	"osaka":     Info{Pic: fmt.Sprintf(picTempl, "osaka")},
+	"kobe":      Info{Pic: fmt.Sprintf(picTempl, "kobe")},
+	"okayama":   Info{Pic: fmt.Sprintf(picTempl, "okayama")},
+	"kagawa":    Info{Pic: fmt.Sprintf(picTempl, "kagawa")},
+	"fukuoka":   Info{Pic: fmt.Sprintf(picTempl, "fukuoka")},
+	"kagoshima": Info{Pic: fmt.Sprintf(picTempl, "kagoshima")},
+	"okinawa":   Info{Pic: fmt.Sprintf(picTempl, "okinawa")},
+	"kumamoto":  Info{Pic: fmt.Sprintf(picTempl, "kumamoto")},
+	"saitama":   Info{Pic: fmt.Sprintf(picTempl, "saitama")},
+	"hiroshima": Info{Pic: fmt.Sprintf(picTempl, "hiroshima")},
+	"chiba":     Info{Pic: fmt.Sprintf(picTempl, "chiba")},
+	"nara":      Info{Pic: fmt.Sprintf(picTempl, "nara")},
+	"yamaguchi": Info{Pic: fmt.Sprintf(picTempl, "yamaguchi")},
+	"nagano":    Info{Pic: fmt.Sprintf(picTempl, "nagano")},
+	"shizuoka":  Info{Pic: fmt.Sprintf(picTempl, "shizuoka")},
+	"miyazaki":  Info{Pic: fmt.Sprintf(picTempl, "miyazaki")},
+	"tottori":   Info{Pic: fmt.Sprintf(picTempl, "tottori")},
+	"iwate":     Info{Pic: fmt.Sprintf(picTempl, "iwate")},
+	"ibaraki":   Info{Pic: fmt.Sprintf(picTempl, "ibaraki")},
+	"tochigi":   Info{Pic: fmt.Sprintf(picTempl, "tochigi")},
+	"taiwan":    Info{Pic: fmt.Sprintf(picTempl, "taiwa/")},
+	"hawaii":    Info{Pic: fmt.Sprintf(picTempl, "hawaii")},
+	"seifuku":   Info{Pic: fmt.Sprintf(picTempl, "seifuku")},
+	"megane":    Info{Pic: fmt.Sprintf(picTempl, "megane")},
+	"sara":      Info{Pic: fmt.Sprintf(picTempl, "sara")},
+	"hairstyle": Info{Pic: fmt.Sprintf(picTempl, "hairstyle")},
+	"asahi":     Info{Pic: fmt.Sprintf(picTempl, "tv-asahi")},
+	"circuit":   Info{Pic: fmt.Sprintf(picTempl, "cc")},
+	"hanayome":  Info{Pic: fmt.Sprintf(picTempl, "hanayome")},
+	"waseda":    Info{Pic: fmt.Sprintf(picTempl, "wasedastyle")},
+}
+
 type BijinBot struct {
+	Location *time.Location
 }
 
 type BijinConfiguration struct {
@@ -39,96 +96,87 @@ func init() {
 	} else {
 		log.Printf("WARNING: Could not find configuration file bijin.json in %s", *ConfigDirectory)
 	}
-	RegisterRobot("bijin", func() (robot Robot) { return new(BijinBot) })
+	b := &BijinBot{}
+	if BijinConfig.Timezone != "" {
+		loc, err := time.LoadLocation(BijinConfig.Timezone)
+		if err != nil {
+			b.Location = loc
+		} else {
+			b.Location = time.UTC
+		}
+	}
+
+	RegisterRobot("bijin", b)
 }
 
-func (r BijinBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {
-	go r.DeferredAction(command)
+func (r BijinBot) Run(p *Payload) (slashCommandImmediateReturn string) {
+	go r.DeferredAction(p)
 	return ""
 }
 
-func (r BijinBot) DeferredAction(command *SlashCommand) {
-	response := new(IncomingWebhook)
-	response.Channel = command.Channel_ID
-	response.Username = "Bijin Bot"
-	response.Icon_Emoji = ":ghost:"
-	response.Unfurl_Links = true
+func (r BijinBot) DeferredAction(p *Payload) {
+	response := &IncomingWebhook{
+		Channel:     p.ChannelID,
+		Username:    "Bijin Bot",
+		IconEmoji:   ":ghost:",
+		UnfurlLinks: true,
+	}
 
 	rand.Seed(time.Now().UTC().UnixNano())
-	t := time.Now()
-	if BijinConfig.Timezone != "" {
-		loc, err := time.LoadLocation(BijinConfig.Timezone)
-		if err == nil {
-			t = t.In(loc)
-		} else {
-			response.Text = fmt.Sprintf("ERROR: Unknown timezone (%s) - Serving UTC", BijinConfig.Timezone)
-			MakeIncomingWebhookCall(response)
-		}
-	} else {
-		response.Text = fmt.Sprintf("WARNING: No timezone set - Serving UTC")
-		MakeIncomingWebhookCall(response)
-	}
+	t := time.Now().In(r.Location)
 	hours := fmt.Sprintf("%02d", t.Hour())
 	minutes := fmt.Sprintf("%02d", t.Minute())
-	region, link := GetLink(strings.ToLower(strings.TrimSpace(command.Text)))
-	response.Text = fmt.Sprintf("<@%s|%s> Here's your <%s%s%s.jpg|%s:%s 美人 (%s)> ", command.User_ID, command.User_Name, link, hours, minutes, hours, minutes, strings.ToTitle(region))
+	region, link, _ := GetLink(strings.ToLower(strings.TrimSpace(p.Text)))
+	// b = GetInfo(info, hours, minutes)
+	response.Text = fmt.Sprintf("<@%s|%s> Here's your <%s%s%s.jpg|%s:%s 美人 (%s)> ", p.UserID, p.UserName, link, hours, minutes, hours, minutes, strings.ToTitle(region))
 	MakeIncomingWebhookCall(response)
 }
 
-func GetLink(region string) (string, string) {
-	links := map[string]string{"japan": "http://www.bijint.com/jp/tokei_images/",
-		"clk":       "http://www.bijint.com/jp/img/clk/",
-		"2012":      "http://www.bijint.com/2012jp/tokei_images/",
-		"2011":      "http://www.bijint.com/2011jp/tokei_images/",
-		"tokyo":     "http://www.bijint.com/tokyo/tokei_images/",
-		"hokkaido":  "http://www.bijint.com/hokkaido/tokei_images/",
-		"sendai":    "http://www.bijint.com/sendai/tokei_images/",
-		"akita":     "http://www.bijint.com/akita/tokei_images/",
-		"gunma":     "http://www.bijint.com/gunma/tokei_images/",
-		"niigata":   "http://www.bijint.com/niigata/tokei_images/",
-		"kanazawa":  "http://www.bijint.com/kanazawa/tokei_images/",
-		"fukui":     "http://www.bijint.com/fukui/tokei_images/",
-		"nagoya":    "http://www.bijint.com/nagoya/tokei_images/",
-		"kyoto":     "http://www.bijint.com/kyoto/tokei_images/",
-		"osaka":     "http://www.bijint.com/osaka/tokei_images/",
-		"kobe":      "http://www.bijint.com/kobe/tokei_images/",
-		"okayama":   "http://www.bijint.com/okayama/tokei_images/",
-		"kagawa":    "http://www.bijint.com/kagawa/tokei_images/",
-		"fukuoka":   "http://www.bijint.com/fukuoka/tokei_images/",
-		"kagoshima": "http://www.bijint.com/kagoshima/tokei_images/",
-		"okinawa":   "http://www.bijint.com/okinawa/tokei_images/",
-		"kumamoto":  "http://www.bijint.com/kumamoto/tokei_images/",
-		"saitama":   "http://www.bijint.com/saitama/tokei_images/",
-		"hiroshima": "http://www.bijint.com/hiroshima/tokei_images/",
-		"chiba":     "http://www.bijint.com/chiba/tokei_images/",
-		"nara":      "http://www.bijint.com/nara/tokei_images/",
-		"yamaguchi": "http://www.bijint.com/yamaguchi/tokei_images/",
-		"nagano":    "http://www.bijint.com/nagano/tokei_images/",
-		"shizuoka":  "http://www.bijint.com/shizuoka/tokei_images/",
-		"miyazaki":  "http://www.bijint.com/miyazaki/tokei_images/",
-		"tottori":   "http://www.bijint.com/tottori/tokei_images/",
-		"iwate":     "http://www.bijint.com/iwate/tokei_images/",
-		"ibaraki":   "http://www.bijint.com/ibaraki/tokei_images/",
-		"tochigi":   "http://www.bijint.com/tochigi/tokei_images/",
-		"taiwan":    "http://www.bijint.com/taiwan/tokei_images/",
-		"hawaii":    "http://www.bijint.com/hawaii/tokei_images/",
-		"seifuku":   "http://www.bijint.com/seifuku/tokei_images/",
-		"megane":    "http://www.bijint.com/megane/tokei_images/",
-		"sara":      "http://www.bijint.com/sara/tokei_images/",
-		"hairstyle": "http://www.bijint.com/hairstyle/tokei_images/",
-		"asahi":     "http://www.bijint.com/tv-asahi/tokei_images/",
-		"circuit":   "http://www.bijint.com/cc/tokei_images/",
-		"hanayome":  "http://www.bijint.com/hanayome/tokei_images/",
-		"waseda":    "http://www.bijint.com/wasedastyle/tokei_images/",
+// type Bijin struct {
+// 	Birthday time.Time
+// }
+
+// func GetInfo(info, hours, minutes string) Bijin {
+// 	const u = "%scache/%s%s.html"
+// 	b := &Bijin{}
+// 	client := &http.Client{}
+// 	req, err := http.NewRequest("GET", fmt.Sprintf(u, info, hours, minutes), nil)
+// 	if err != nil {
+// 		return b
+// 	}
+// 	req.Header.Add("Host", "http://www.bijint.com")
+// 	req.Header.Add("Referer", info)
+// 	resp, err := client.Do(req)
+// 	defer resp.Body.Close()
+// 	if err != nil {
+// 		return b
+// 	}
+// 	t := html.NewTokenizerFragment(resp.Body, "div")
+// 	p := false
+// 	for {
+// 		if t.Next() == html.ErrorToken {
+// 			// Returning io.EOF indicates success.
+// 			break
+// 		}
+// 		token := t.Token()
+// 		if !p && token.Type == html.CommentToken && strings.Contains(token.String(), "profile") {
+// 			p = true
+// 		}
+// 		log.Println(token.String())
+// 	}
+// 	return b
+// }
+
+func GetLink(region string) (string, string, string) {
+	var r string
+	var i Info
+	if i, ok := links[region]; ok {
+		return region, i.Pic, i.Bio
 	}
-	if link, ok := links[region]; ok {
-		return region, link
-	} else {
-		for region, link := range links {
-			return region, link
-		}
+	for r, i = range links {
+		break
 	}
-	return "japan", links["japan"]
+	return r, i.Pic, i.Bio
 }
 
 func (r BijinBot) Description() (description string) {

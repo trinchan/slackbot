@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -13,60 +12,72 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/slack", CommandHandler)
-	http.HandleFunc("/slack_hook", CommandHandler)
+	http.HandleFunc("/slack", SlashCommandHandler)
+	http.HandleFunc("/slack_hook", HookHandler)
 	StartServer()
 }
-func CommandHandler(w http.ResponseWriter, r *http.Request) {
+
+func HookHandler(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
-	hook := r.URL.Path == "/slack_hook"
-	if err == nil {
-		decoder := schema.NewDecoder()
-		command := new(robots.SlashCommand)
-		err := decoder.Decode(command, r.PostForm)
-		if err != nil {
-			log.Println("Couldn't parse post request:", err)
-		}
-		if hook {
-			c := strings.Split(command.Text, " ")
-			command.Command = c[1]
-			command.Text = strings.Join(c[2:], " ")
-		} else {
-			command.Command = command.Command[1:]
-		}
-		robot := GetRobot(command.Command)
-		w.WriteHeader(http.StatusOK)
-		if robot != nil {
-			if hook {
-				JSONResp(w, robot.Run(command))
-			} else {
-				plainResp(w, robot.Run(command))
-			}
-		} else {
-			r := "No robot for that command yet :("
-			if hook {
-				JSONResp(w, r)
-			} else {
-				plainResp(w, r)
-			}
-		}
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
+	d := schema.NewDecoder()
+	command := new(robots.OutgoingWebHook)
+	err = d.Decode(command, r.PostForm)
+	if err != nil {
+		log.Println("Couldn't parse post request:", err)
+	}
+	c := strings.Split(command.Text, " ")
+	command.Robot = c[1]
+	command.Text = strings.Join(c[2:], " ")
+
+	robot := GetRobot(command.Robot)
+	if robot == nil {
+		jsonResp(w, "No robot for that command yet :(")
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	jsonResp(w, robot.Run(&command.Payload))
 }
 
-func JSONResp(w http.ResponseWriter, msg string) {
+func SlashCommandHandler(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	d := schema.NewDecoder()
+	command := new(robots.SlashCommand)
+	err = d.Decode(command, r.PostForm)
+	if err != nil {
+		log.Println("Couldn't parse post request:", err)
+	}
+	command.Robot = command.Command[1:]
+	robot := GetRobot(command.Robot)
+	if robot == nil {
+		plainResp(w, "No robot for that command yet :(")
+		return
+	}
+	plainResp(w, robot.Run(&command.Payload))
+}
+
+func jsonResp(w http.ResponseWriter, msg string) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	resp := map[string]string{"text": msg}
 	r, err := json.Marshal(resp)
 	if err != nil {
 		log.Println("Couldn't marshal hook response:", err)
-	} else {
-		io.WriteString(w, string(r))
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
+	w.Write(r)
 }
 
 func plainResp(w http.ResponseWriter, msg string) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	io.WriteString(w, msg)
+	w.Write([]byte(msg))
 }
 
 func StartServer() {
@@ -79,8 +90,8 @@ func StartServer() {
 }
 
 func GetRobot(command string) robots.Robot {
-	if RobotInitFunction, ok := robots.Robots[command]; ok {
-		return RobotInitFunction()
+	if r, ok := robots.Robots[command]; ok {
+		return r
 	}
 	return nil
 }

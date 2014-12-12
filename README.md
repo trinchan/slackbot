@@ -95,8 +95,8 @@ func (r TestBot) DeferredAction(command *SlashCommand) {
     response.Channel = command.Channel_ID
     response.Username = "Test Bot"
     response.Text = "Hi there!"
-    response.Icon_Emoji = ":ghost:"
-    response.Unfurl_Links = true
+    response.IconEmoji = ":ghost:"
+    response.UnfurlLinks = true
     response.Parse = "full"
     MakeIncomingWebhookCall(response)
 }

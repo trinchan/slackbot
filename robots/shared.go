@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 )
 
-var Robots = make(map[string]func() Robot)
+var Robots = make(map[string]Robot)
 var Config = new(Configuration)
 var ConfigDirectory = flag.String("c", ".", "Configuration directory (default .)")
 
@@ -29,12 +29,12 @@ func init() {
 	}
 }
 
-func RegisterRobot(command string, RobotInitFunction func() Robot) {
+func RegisterRobot(command string, r Robot) {
 	if _, ok := Robots[command]; ok {
 		log.Printf("There are two robots mapped to %s!", command)
 	} else {
 		log.Printf("Registered: %s", command)
-		Robots[command] = RobotInitFunction
+		Robots[command] = r
 	}
 }
 
@@ -45,17 +45,17 @@ func MakeIncomingWebhookCall(payload *IncomingWebhook) error {
 		Path:   "/services/hooks/incoming-webhook",
 	}
 
-	json_payload, err := json.Marshal(payload)
+	p, err := json.Marshal(payload)
 	if err != nil {
 		return err
 	}
 
-	post_data := url.Values{}
-	post_data.Set("payload", string(json_payload))
-	post_data.Set("token", Config.Token)
+	data := url.Values{}
+	data.Set("payload", string(p))
+	data.Set("token", Config.Token)
 
-	webhook.RawQuery = post_data.Encode()
-	resp, err := http.PostForm(webhook.String(), post_data)
+	webhook.RawQuery = data.Encode()
+	resp, err := http.PostForm(webhook.String(), data)
 	if resp.StatusCode != 200 {
 		message := fmt.Sprintf("ERROR: Non-200 Response from Slack Incoming Webhook API: %s", resp.Status)
 		log.Println(message)

@@ -11,12 +11,12 @@ type DecideBot struct {
 }
 
 func init() {
-	RegisterRobot("decide", func() (robot Robot) { return new(DecideBot) })
+	RegisterRobot("decide", new(DecideBot))
 }
 
-func (d DecideBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {
-	go d.DeferredAction(command)
-	text := strings.TrimSpace(command.Text)
+func (d DecideBot) Run(p *Payload) (slashCommandImmediateReturn string) {
+	go d.DeferredAction(p)
+	text := strings.TrimSpace(p.Text)
 	if text == "" {
 		return "I need something to decide on!"
 	} else {
@@ -24,19 +24,20 @@ func (d DecideBot) Run(command *SlashCommand) (slashCommandImmediateReturn strin
 	}
 }
 
-func (d DecideBot) DeferredAction(command *SlashCommand) {
-	response := new(IncomingWebhook)
-	response.Channel = command.Channel_ID
-	response.Username = "Fate Bot"
-	response.Icon_Emoji = ":ghost:"
-	response.Unfurl_Links = true
-	response.Parse = "full"
-	text := strings.TrimSpace(command.Text)
+func (d DecideBot) DeferredAction(p *Payload) {
+	response := &IncomingWebhook{
+		Channel:     p.ChannelID,
+		Username:    "Fate Bot",
+		IconEmoji:   ":ghost:",
+		UnfurlLinks: true,
+		Parse:       ParseStyleFull,
+	}
+	text := strings.TrimSpace(p.Text)
 	if text != "" {
 		split := strings.Split(text, " ")
-		response.Text = fmt.Sprintf("@%s: Deciding between: (%s)", command.User_Name, strings.Join(split, ", "))
+		response.Text = fmt.Sprintf("@%s: Deciding between: (%s)", p.UserName, strings.Join(split, ", "))
 		MakeIncomingWebhookCall(response)
-		response.Text = fmt.Sprintf("@%s: Decided on: %s", command.User_Name, Decide(split))
+		response.Text = fmt.Sprintf("@%s: Decided on: %s", p.UserName, Decide(split))
 		MakeIncomingWebhookCall(response)
 	}
 }

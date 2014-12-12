@@ -4,14 +4,13 @@ type RobotsBot struct {
 }
 
 func init() {
-	RegisterRobot("c", func() (robot Robot) { return new(RobotsBot) })
+	RegisterRobot("c", new(RobotsBot))
 }
 
-func (r RobotsBot) Run(command *SlashCommand) (slashCommandImmediateReturn string) {
+func (r RobotsBot) Run(p *Payload) (slashCommandImmediateReturn string) {
 	output := ""
-	for command, RobotInitFunction := range Robots {
-		robot := RobotInitFunction()
-		output = output + "\n" + command + " - " + robot.Description() + "\n"
+	for command, r := range Robots {
+		output = output + "\n" + command + " - " + r.Description() + "\n"
 	}
 	return output
 }
