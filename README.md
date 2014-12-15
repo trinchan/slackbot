@@ -1,7 +1,7 @@
 slackbot
 ===========
 
-A framework for building bots for Slack
+Simple, pluggable bot framework for [Slack](https://www.slack.com) chat.
 
 Dependencies
 ============
