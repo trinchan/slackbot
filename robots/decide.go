@@ -11,7 +11,8 @@ type DecideBot struct {
 }
 
 func init() {
-	RegisterRobot("decide", new(DecideBot))
+	d := &DecideBot{}
+	RegisterRobot("decide", d)
 }
 
 func (d DecideBot) Run(p *Payload) (slashCommandImmediateReturn string) {
@@ -36,9 +37,9 @@ func (d DecideBot) DeferredAction(p *Payload) {
 	if text != "" {
 		split := strings.Split(text, " ")
 		response.Text = fmt.Sprintf("@%s: Deciding between: (%s)", p.UserName, strings.Join(split, ", "))
-		go MakeIncomingWebhookCall(response)
+		go response.Send()
 		response.Text = fmt.Sprintf("@%s: Decided on: %s", p.UserName, Decide(split))
-		MakeIncomingWebhookCall(response)
+		response.Send()
 	}
 }
 

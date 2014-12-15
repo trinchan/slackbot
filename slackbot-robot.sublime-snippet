@@ -38,7 +38,8 @@ func init() {
     } else {
         log.Printf("WARNING: Could not find configuration file ${1/(.+)/\L\1/g}.json in %s", *ConfigDirectory)
     }
-    RegisterRobot("${1/(.+)/\L\1/g}", new($1Bot))
+    $1 := &$1Bot{}
+    RegisterRobot("${1/(.+)/\L\1/g}", $1)
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.
@@ -64,7 +65,7 @@ func (r $1Bot) DeferredAction(p *Payload) {
         UnfurlLinks: true,
         Parse:       ParseStyleFull,
     }
-    MakeIncomingWebhookCall(response)
+    response.Send()
 }
 
 func (r $1Bot) Description() (description string) {

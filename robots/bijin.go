@@ -129,7 +129,7 @@ func (r BijinBot) DeferredAction(p *Payload) {
 	region, link, _ := GetLink(strings.ToLower(strings.TrimSpace(p.Text)))
 	// b = GetInfo(info, hours, minutes)
 	response.Text = fmt.Sprintf("<@%s|%s> Here's your <%s%s%s.jpg|%s:%s 美人 (%s)> ", p.UserID, p.UserName, link, hours, minutes, hours, minutes, strings.ToTitle(region))
-	MakeIncomingWebhookCall(response)
+	response.Send()
 }
 
 // type Bijin struct {

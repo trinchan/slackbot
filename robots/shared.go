@@ -38,14 +38,14 @@ func RegisterRobot(command string, r Robot) {
 	}
 }
 
-func MakeIncomingWebhookCall(payload *IncomingWebhook) error {
+func (i *IncomingWebhook) Send() error {
 	webhook := url.URL{
 		Scheme: "https",
 		Host:   Config.Domain + ".slack.com",
 		Path:   "/services/hooks/incoming-webhook",
 	}
 
-	p, err := json.Marshal(payload)
+	p, err := json.Marshal(i)
 	if err != nil {
 		return err
 	}

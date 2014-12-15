@@ -2,14 +2,11 @@ package robots
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
-	"os"
-	"path/filepath"
 	"strings"
 )
 
@@ -21,25 +18,9 @@ type YoutubeConfiguration struct {
 
 var YoutubeConfig = new(YoutubeConfiguration)
 
-// Loads the config file and registers the bot with the server for command /youtube.
 func init() {
-	flag.Parse()
-	configFile := filepath.Join(*ConfigDirectory, "youtube.json")
-	if _, err := os.Stat(configFile); err == nil {
-		config, err := ioutil.ReadFile(configFile)
-		if err != nil {
-			log.Printf("ERROR: Error opening youtube config: %s", err)
-			return
-		}
-		err = json.Unmarshal(config, YoutubeConfig)
-		if err != nil {
-			log.Printf("ERROR: Error parsing youtube config: %s", err)
-			return
-		}
-	} else {
-		log.Printf("WARNING: Could not find configuration file youtube.json in %s", *ConfigDirectory)
-	}
-	RegisterRobot("youtube", new(YoutubeBot))
+	y := &YoutubeBot{}
+	RegisterRobot("youtube", y)
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.
@@ -91,7 +72,7 @@ func (r YoutubeBot) DeferredAction(p *Payload) {
 			UnfurlLinks: true,
 		}
 
-		go MakeIncomingWebhookCall(response)
+		go response.Send()
 		resp, err := http.Get(fmt.Sprintf("https://gdata.youtube.com/feeds/api/videos?q=%s&orderBy=relevance&alt=json&max-results=1", url.QueryEscape(text)))
 		defer resp.Body.Close()
 		if resp.StatusCode != http.StatusOK {
@@ -117,7 +98,7 @@ func (r YoutubeBot) DeferredAction(p *Payload) {
 				response.Text = fmt.Sprintf("@%s: %s", p.UserName, "No YouTube videos for that search :(")
 			}
 		}
-		MakeIncomingWebhookCall(response)
+		response.Send()
 	}
 }
 

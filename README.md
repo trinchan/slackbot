@@ -75,7 +75,8 @@ func init() {
     } else {
         log.Printf("WARNING: Could not find configuration file test.json in %s", *ConfigDirectory)
     }
-    RegisterRobot("test", new(TestBot))
+    t := &TestBot{}
+    RegisterRobot("test", t)
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.
@@ -101,7 +102,7 @@ func (r TestBot) DeferredAction(p *Payload) {
         UnfurlLinks: true,
         Parse:       ParseStyleFull,
     }
-    MakeIncomingWebhookCall(response)
+    response.Send()
 }
 
 func (r TestBot) Description() (description string) {

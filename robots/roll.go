@@ -12,7 +12,8 @@ type RollBot struct {
 }
 
 func init() {
-	RegisterRobot("roll", new(RollBot))
+	r := &RollBot{}
+	RegisterRobot("roll", r)
 }
 
 func (roll RollBot) Run(p *Payload) (slashCommandImmediateReturn string) {
@@ -30,7 +31,7 @@ func (roll RollBot) DeferredAction(p *Payload) {
 		Parse:       ParseStyleFull,
 	}
 
-	MakeIncomingWebhookCall(response)
+	response.Send()
 }
 
 func (r RollBot) Description() (description string) {

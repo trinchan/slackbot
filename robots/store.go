@@ -1,14 +1,6 @@
 package robots
 
-import (
-	"encoding/json"
-	"flag"
-	"fmt"
-	"io/ioutil"
-	"log"
-	"os"
-	"path/filepath"
-)
+import "fmt"
 
 type StoreBot struct {
 }
@@ -20,23 +12,8 @@ var StoreConfig = new(StoreConfiguration)
 
 // Loads the config file and registers the bot with the server for command /store.
 func init() {
-	flag.Parse()
-	configFile := filepath.Join(*ConfigDirectory, "store.json")
-	if _, err := os.Stat(configFile); err == nil {
-		config, err := ioutil.ReadFile(configFile)
-		if err != nil {
-			log.Printf("ERROR: Error opening store config: %s", err)
-			return
-		}
-		err = json.Unmarshal(config, StoreConfig)
-		if err != nil {
-			log.Printf("ERROR: Error parsing store config: %s", err)
-			return
-		}
-	} else {
-		log.Printf("WARNING: Could not find configuration file store.json in %s", *ConfigDirectory)
-	}
-	RegisterRobot("store", new(StoreBot))
+	s := &StoreBot{}
+	RegisterRobot("store", s)
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.
@@ -62,7 +39,7 @@ func (r StoreBot) DeferredAction(p *Payload) {
 		UnfurlLinks: true,
 		Parse:       ParseStyleFull,
 	}
-	MakeIncomingWebhookCall(response)
+	response.Send()
 }
 
 func (r StoreBot) Description() (description string) {

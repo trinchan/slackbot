@@ -8,7 +8,8 @@ type PingBot struct {
 }
 
 func init() {
-	RegisterRobot("ping", new(PingBot))
+	p := &PingBot{}
+	RegisterRobot("ping", p)
 }
 
 func (pb PingBot) Run(p *Payload) (slashCommandImmediateReturn string) {
@@ -25,7 +26,7 @@ func (pb PingBot) DeferredAction(p *Payload) {
 		UnfurlLinks: true,
 		Parse:       ParseStyleFull,
 	}
-	MakeIncomingWebhookCall(response)
+	response.Send()
 }
 
 func (pb PingBot) Description() (description string) {

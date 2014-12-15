@@ -12,7 +12,8 @@ type WikiBot struct {
 }
 
 func init() {
-	RegisterRobot("wiki", new(WikiBot))
+	w := &WikiBot{}
+	RegisterRobot("wiki", w)
 }
 
 func (w WikiBot) Run(p *Payload) (slashCommandImmediateReturn string) {
@@ -32,7 +33,7 @@ func (w WikiBot) DeferredAction(p *Payload) {
 			Parse:       ParseStyleFull,
 		}
 
-		go MakeIncomingWebhookCall(response)
+		go response.Send()
 		resp, err := http.Get(fmt.Sprintf("http://www.google.com/search?q=(site:en.wikipedia.org+OR+site:ja.wikipedia.org)+%s&btnI", url.QueryEscape(text)))
 		defer resp.Body.Close()
 		if resp.StatusCode != http.StatusOK {
@@ -44,7 +45,7 @@ func (w WikiBot) DeferredAction(p *Payload) {
 		} else {
 			response.Text = fmt.Sprintf("@%s: %s", p.UserName, resp.Request.URL.String())
 		}
-		MakeIncomingWebhookCall(response)
+		response.Send()
 	}
 }
 
