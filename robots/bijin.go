@@ -20,11 +20,10 @@ type Info struct {
 
 const infoTempl = "http://base-generate.bijint.com/%s/"
 const picTempl = "http://www.bijint.com/%s/tokei_images/"
-const bTempl = "http://www.bijint.com/%s/"
 
 var links = map[string]Info{
 	"japan":     Info{Pic: fmt.Sprintf(picTempl, "jp")},
-	"clk":       Info{Pic: fmt.Sprintf(bTempl, "jp/img/clk")},
+	"thailand":  Info{Pic: fmt.Sprintf(picTempl, "jp/img/clk")},
 	"2012":      Info{Pic: fmt.Sprintf(picTempl, "2012jp")},
 	"2011":      Info{Pic: fmt.Sprintf(picTempl, "2011jp")},
 	"tokyo":     Info{Pic: fmt.Sprintf(picTempl, "tokyo")},
@@ -100,9 +99,10 @@ func init() {
 	if BijinConfig.Timezone != "" {
 		loc, err := time.LoadLocation(BijinConfig.Timezone)
 		if err != nil {
-			b.Location = loc
-		} else {
+			log.Printf("Error loading timezone %q, falling back to UTC (%s)", BijinConfig.Timezone, err.Error())
 			b.Location = time.UTC
+		} else {
+			b.Location = loc
 		}
 	}
 
