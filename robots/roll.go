@@ -23,6 +23,7 @@ func (roll RollBot) Run(p *Payload) (slashCommandImmediateReturn string) {
 
 func (roll RollBot) DeferredAction(p *Payload) {
 	response := &IncomingWebhook{
+		Domain:      p.TeamDomain,
 		Channel:     p.ChannelID,
 		Username:    "Dice Bot",
 		Text:        Roll(p),

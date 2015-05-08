@@ -27,6 +27,7 @@ func (d DecideBot) Run(p *Payload) (slashCommandImmediateReturn string) {
 
 func (d DecideBot) DeferredAction(p *Payload) {
 	response := &IncomingWebhook{
+		Domain:      p.TeamDomain,
 		Channel:     p.ChannelID,
 		Username:    "Fate Bot",
 		IconEmoji:   ":ghost:",
