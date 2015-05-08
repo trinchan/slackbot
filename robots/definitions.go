@@ -6,13 +6,17 @@ type SlashCommand struct {
 }
 
 type Payload struct {
-	Token       string `schema:"token"`
-	TeamID      string `schema:"team_id"`
-	ChannelID   string `schema:"channel_id"`
-	ChannelName string `schema:"channel_name"`
-	UserID      string `schema:"user_id"`
-	UserName    string `schema:"user_name"`
-	Text        string `schema:"text,omitempty"`
+	Token       string  `schema:"token"`
+	TeamID      string  `schema:"team_id"`
+	TeamDomain  string  `schema:"team_domain,omitempty"`
+	ChannelID   string  `schema:"channel_id"`
+	ChannelName string  `schema:"channel_name"`
+	Timestamp   float64 `schema:"timestamp,omitempty"`
+	UserID      string  `schema:"user_id"`
+	UserName    string  `schema:"user_name"`
+	Text        string  `schema:"text,omitempty"`
+	TriggerWord string  `schema:"trigger_word,omitempty"`
+	Service_ID  string  `schema:"service_id,omitempty"`
 	Robot       string
 }
 
@@ -36,6 +40,7 @@ var (
 )
 
 type IncomingWebhook struct {
+	Domain      string       `json:"domain"`
 	Channel     string       `json:"channel"`
 	Username    string       `json:"username"`
 	Text        string       `json:"text"`
@@ -74,9 +79,8 @@ type AttachmentField struct {
 }
 
 type Configuration struct {
-	Domain string `schema:"domain"`
-	Port   int    `schema:"port"`
-	Token  string `schema:"token"`
+	Port         int               `json:"port"`
+	DomainTokens map[string]string `json:"domain_tokens"`
 }
 
 type Robot interface {
