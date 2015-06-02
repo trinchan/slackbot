@@ -116,6 +116,7 @@ func (r BijinBot) Run(p *Payload) (slashCommandImmediateReturn string) {
 
 func (r BijinBot) DeferredAction(p *Payload) {
 	response := &IncomingWebhook{
+		Domain:      p.TeamDomain,
 		Channel:     p.ChannelID,
 		Username:    "Bijin Bot",
 		IconEmoji:   ":ghost:",

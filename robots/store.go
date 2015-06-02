@@ -32,6 +32,7 @@ func (r StoreBot) DeferredAction(p *Payload) {
 	// read the Slack API Docs (https://api.slack.com/) to know which fields are required, etc.
 	// You can also see what data is available from the command structure in definitions.go
 	response := &IncomingWebhook{
+		Domain:      p.TeamDomain,
 		Channel:     p.ChannelID,
 		Username:    "Store Bot",
 		IconEmoji:   ":famima:",

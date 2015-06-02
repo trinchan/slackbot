@@ -2,6 +2,7 @@ package robots
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -27,6 +28,9 @@ func init() {
 	if err != nil {
 		log.Fatal("Error parsing config: ", err)
 	}
+
+	log.Printf("Found %d domain configurations", len(Config.DomainTokens))
+	log.Printf("Port: %d", Config.Port)
 }
 
 func RegisterRobot(command string, r Robot) {
@@ -39,9 +43,15 @@ func RegisterRobot(command string, r Robot) {
 }
 
 func (i *IncomingWebhook) Send() error {
+	if _, ok := Config.DomainTokens[i.Domain]; !ok {
+		err := errors.New(fmt.Sprintf("Domain: \"%s\" not found in configuration", i.Domain))
+		log.Print(err)
+		return err
+	}
+
 	webhook := url.URL{
 		Scheme: "https",
-		Host:   Config.Domain + ".slack.com",
+		Host:   i.Domain + ".slack.com",
 		Path:   "/services/hooks/incoming-webhook",
 	}
 
@@ -52,7 +62,7 @@ func (i *IncomingWebhook) Send() error {
 
 	data := url.Values{}
 	data.Set("payload", string(p))
-	data.Set("token", Config.Token)
+	data.Set("token", Config.DomainTokens[i.Domain])
 
 	webhook.RawQuery = data.Encode()
 	resp, err := http.PostForm(webhook.String(), data)

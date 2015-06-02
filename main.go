@@ -29,9 +29,11 @@ func HookHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Couldn't parse post request:", err)
 	}
-	c := strings.Split(command.Text, " ")
-	command.Robot = c[1]
-	command.Text = strings.Join(c[2:], " ")
+	log.Printf("Recieved command: %s from \"%s\"\n", command.Text[1:len(command.Text)], command.TeamDomain)
+	//Assume outgoing webhooks are preceded with a character
+	c := strings.Split(command.Text[1:len(command.Text)], " ")
+	command.Robot = c[0]
+	command.Text = strings.Join(c[1:], " ")
 
 	robot := GetRobot(command.Robot)
 	if robot == nil {

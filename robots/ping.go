@@ -19,6 +19,7 @@ func (pb PingBot) Run(p *Payload) (slashCommandImmediateReturn string) {
 
 func (pb PingBot) DeferredAction(p *Payload) {
 	response := &IncomingWebhook{
+		Domain:      p.TeamDomain,
 		Channel:     p.ChannelID,
 		Username:    "Ping Bot",
 		Text:        fmt.Sprintf("@%s Pong!", p.UserName),

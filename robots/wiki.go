@@ -25,6 +25,7 @@ func (w WikiBot) DeferredAction(p *Payload) {
 	text := strings.TrimSpace(p.Text)
 	if text != "" {
 		response := &IncomingWebhook{
+			Domain:      p.TeamDomain,
 			Channel:     p.ChannelID,
 			Username:    "Wiki Bot",
 			Text:        fmt.Sprintf("@%s: Searching google for wikis relating to: %s", p.UserName, text),

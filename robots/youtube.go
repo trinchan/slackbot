@@ -65,6 +65,7 @@ func (r YoutubeBot) DeferredAction(p *Payload) {
 	text := strings.TrimSpace(p.Text)
 	if text != "" {
 		response := &IncomingWebhook{
+			Domain:      p.TeamDomain,
 			Channel:     p.ChannelID,
 			Username:    "YouTube Bot",
 			Text:        fmt.Sprintf("@%s: Searching youtube for %s", p.UserName, text),
