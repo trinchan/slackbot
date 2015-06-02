@@ -52,7 +52,7 @@ The bot will respond to commands of the form `{trigger_word}bot param param para
 #####Configuring Slash Commands
 Alternativly, each bot you make can respond to a corresponding [Slash Command](https://my.slack.com/services/new/slash-commands).
 
-1. Add a new slash command, use the [bot's name](https://github.com/CptSpaceToaster/slackbot/tree/master/robots) as the name of the command.  
+1. Add a new slash command, use the [bot's name](https://github.com/trinchan/slackbot/tree/master/robots) as the name of the command.  
 2. The URL should follow the following format: `your_address.com:port/slack` (no trailing /)  
 3. You want to use POST.  
 4. This bot does not currently pay attention to the payload's token.  
