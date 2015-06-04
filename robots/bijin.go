@@ -56,7 +56,7 @@ var links = map[string]Info{
 	"iwate":     Info{Pic: fmt.Sprintf(picTempl, "iwate")},
 	"ibaraki":   Info{Pic: fmt.Sprintf(picTempl, "ibaraki")},
 	"tochigi":   Info{Pic: fmt.Sprintf(picTempl, "tochigi")},
-	"taiwan":    Info{Pic: fmt.Sprintf(picTempl, "taiwa/")},
+	"taiwan":    Info{Pic: fmt.Sprintf(picTempl, "taiwan")},
 	"hawaii":    Info{Pic: fmt.Sprintf(picTempl, "hawaii")},
 	"seifuku":   Info{Pic: fmt.Sprintf(picTempl, "seifuku")},
 	"megane":    Info{Pic: fmt.Sprintf(picTempl, "megane")},
