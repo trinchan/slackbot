@@ -26,7 +26,7 @@ func (d DecideBot) Run(p *Payload) (slashCommandImmediateReturn string) {
 }
 
 func (d DecideBot) DeferredAction(p *Payload) {
-	response := &IncomingWebhook{
+	response := IncomingWebhook{
 		Domain:      p.TeamDomain,
 		Channel:     p.ChannelID,
 		Username:    "Fate Bot",
@@ -37,9 +37,7 @@ func (d DecideBot) DeferredAction(p *Payload) {
 	text := strings.TrimSpace(p.Text)
 	if text != "" {
 		split := strings.Split(text, " ")
-		response.Text = fmt.Sprintf("@%s: Deciding between: (%s)", p.UserName, strings.Join(split, ", "))
-		go response.Send()
-		response.Text = fmt.Sprintf("@%s: Decided on: %s", p.UserName, Decide(split))
+		response.Text = fmt.Sprintf("@%s: Deciding between: (%s) -> %s", p.UserName, strings.Join(split, ", "), Decide(split))
 		response.Send()
 	}
 }
