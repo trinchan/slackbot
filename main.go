@@ -36,9 +36,8 @@ func hookHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	log.Printf("Recieved command: %s from \"%s\"\n", command.Text[1:len(command.Text)], command.TeamDomain)
-	//Assume outgoing webhooks are preceded with a character
-	c := strings.Split(command.Text[1:len(command.Text)], " ")
+	com := strings.TrimPrefix(command.Text, command.TriggerWord+" ")
+	c := strings.Split(com, " ")
 	command.Robot = c[0]
 	command.Text = strings.Join(c[1:], " ")
 
