@@ -24,4 +24,3 @@ done
 echo ")" >> $1
 
 gofmt -w -s $1
-goimports -w $1
