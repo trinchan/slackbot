@@ -1,0 +1,13 @@
+{
+	"ImportPath": "github.com/trinchan/slackbot",
+	"GoVersion": "go1.4",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/gorilla/schema",
+			"Rev": "7109aabdadf822989b99f1e560b7ea619c20cbb0"
+		}
+	]
+}
