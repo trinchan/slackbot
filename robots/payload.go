@@ -92,6 +92,7 @@ type AttachmentField struct {
 func (i *IncomingWebhook) Send() error {
 	log.Println("Parsing incoming webhook...")
 	u := os.Getenv(fmt.Sprintf("%s_IN_URL", strings.ToUpper(i.Domain)))
+	log.Printf("In URL for %s: %s", fmt.Sprintf("%s_IN_URL", strings.ToUpper(i.Domain)), u)
 	if u != "" {
 		return fmt.Errorf("Slack incoming webhook url not found for domain %s (check %s)", i.Domain, fmt.Sprintf("%s_IN_URL", strings.ToUpper(i.Domain)))
 	}
