@@ -6,7 +6,7 @@ type bot struct{}
 
 func init() {
 	r := &bot{}
-	robots.RegisterRobot("c", r)
+	robots.RegisterRobot("help", r)
 }
 
 func (r *bot) Run(p *robots.Payload) (slashCommandImmediateReturn string) {
