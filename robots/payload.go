@@ -90,6 +90,7 @@ type AttachmentField struct {
 
 // Send uses the IncomingWebhook API to post a message to a slack channel
 func (i *IncomingWebhook) Send() error {
+	log.Println("Parsing incoming webhook...")
 	u := os.Getenv(fmt.Sprintf("%s_IN_URL", strings.ToUpper(i.Domain)))
 	if u != "" {
 		return fmt.Errorf("Slack incoming webhook url not found for domain %s (check %s)", i.Domain, fmt.Sprintf("%s_IN_URL", strings.ToUpper(i.Domain)))
@@ -98,6 +99,8 @@ func (i *IncomingWebhook) Send() error {
 	if err != nil {
 		return err
 	}
+
+	log.Printf("Sending incoming webhook to %s", webhook.Path)
 
 	p, err := json.Marshal(i)
 	if err != nil {
@@ -108,6 +111,7 @@ func (i *IncomingWebhook) Send() error {
 	data.Set("payload", string(p))
 
 	webhook.RawQuery = data.Encode()
+	log.Printf("Posting incoming webhook to %#v", webhook)
 	resp, err := http.PostForm(webhook.String(), data)
 	if resp.StatusCode != 200 {
 		message := fmt.Sprintf("ERROR: Non-200 Response from Slack Incoming Webhook API: %s", resp.Status)

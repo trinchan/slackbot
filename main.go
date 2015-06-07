@@ -87,7 +87,7 @@ func slashCommandHandler(w http.ResponseWriter, r *http.Request) {
 	for _, robot := range robots {
 		resp += fmt.Sprintf("\n%s", robot.Run(&command.Payload))
 	}
-	plainResp(w, resp)
+	plainResp(w, strings.TrimSpace(resp))
 }
 
 func jsonResp(w http.ResponseWriter, msg string) {
