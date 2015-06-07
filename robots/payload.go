@@ -94,10 +94,12 @@ func (i *IncomingWebhook) Send() error {
 	u := os.Getenv(fmt.Sprintf("%s_IN_URL", strings.ToUpper(i.Domain)))
 	log.Printf("In URL for %s: %s", fmt.Sprintf("%s_IN_URL", strings.ToUpper(i.Domain)), u)
 	if u != "" {
+		log.Println("Slack incoming webhook URL not found...")
 		return fmt.Errorf("Slack incoming webhook url not found for domain %s (check %s)", i.Domain, fmt.Sprintf("%s_IN_URL", strings.ToUpper(i.Domain)))
 	}
 	webhook, err := url.Parse(u)
 	if err != nil {
+		log.Printf("Error parsing incoming webhook URL: %v", err)
 		return err
 	}
 
