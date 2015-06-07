@@ -6,32 +6,33 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/trinchan/slackbot/robots"
 )
 
-type WikiBot struct {
-}
+type bot struct{}
 
 func init() {
-	w := &WikiBot{}
-	RegisterRobot("wiki", w)
+	w := &bot{}
+	robots.RegisterRobot("wiki", w)
 }
 
-func (w WikiBot) Run(p *Payload) (slashCommandImmediateReturn string) {
+func (w bot) Run(p *robots.Payload) (slashCommandImmediateReturn string) {
 	go w.DeferredAction(p)
 	return ""
 }
 
-func (w WikiBot) DeferredAction(p *Payload) {
+func (w bot) DeferredAction(p *robots.Payload) {
 	text := strings.TrimSpace(p.Text)
 	if text != "" {
-		response := &IncomingWebhook{
+		response := &robots.IncomingWebhook{
 			Domain:      p.TeamDomain,
 			Channel:     p.ChannelID,
 			Username:    "Wiki Bot",
 			Text:        fmt.Sprintf("@%s: Searching google for wikis relating to: %s", p.UserName, text),
 			IconEmoji:   ":ghost:",
 			UnfurlLinks: true,
-			Parse:       ParseStyleFull,
+			Parse:       robots.ParseStyleFull,
 		}
 
 		go response.Send()
@@ -50,6 +51,6 @@ func (w WikiBot) DeferredAction(p *Payload) {
 	}
 }
 
-func (w WikiBot) Description() (description string) {
+func (w bot) Description() (description string) {
 	return "Wiki bot!\n\tUsage: /wiki\n\tExpected Response: @user: Link to wikipedia article!"
 }

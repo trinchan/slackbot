@@ -8,23 +8,19 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/trinchan/slackbot/robots"
 )
 
-type YoutubeBot struct {
-}
-
-type YoutubeConfiguration struct {
-}
-
-var YoutubeConfig = new(YoutubeConfiguration)
+type bot struct{}
 
 func init() {
-	y := &YoutubeBot{}
-	RegisterRobot("youtube", y)
+	y := &bot{}
+	robots.RegisterRobot("youtube", y)
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.
-func (r YoutubeBot) Run(p *Payload) string {
+func (r bot) Run(p *robots.Payload) string {
 	// If you (optionally) want to do some asynchronous work (like sending API calls to slack)
 	// you can put it in a go routine like this
 	go r.DeferredAction(p)
@@ -33,38 +29,38 @@ func (r YoutubeBot) Run(p *Payload) string {
 	return ""
 }
 
-type YouTubeVideoFeedResults struct {
-	Feed YouTubeFeed `json:"feed"`
+type youTubeVideoFeedResults struct {
+	Feed youTubeFeed `json:"feed"`
 }
 
-type YouTubeFeed struct {
-	Entries []YouTubeEntry `json:"entry,omitempty"`
+type youTubeFeed struct {
+	Entries []youTubeEntry `json:"entry,omitempty"`
 }
 
-type YouTubeEntry struct {
-	Title   YouTubeTitle   `json:"title"`
-	Content YouTubeContent `json:"content"`
-	Link    []YouTubeLink  `json:"link"`
+type youTubeEntry struct {
+	Title   youTubeTitle   `json:"title"`
+	Content youTubeContent `json:"content"`
+	Link    []youTubeLink  `json:"link"`
 }
 
-type YouTubeTitle struct {
+type youTubeTitle struct {
 	String string `json:"$t"`
 }
 
-type YouTubeContent struct {
+type youTubeContent struct {
 	String string `json:"$t"`
 }
 
-type YouTubeLink struct {
+type youTubeLink struct {
 	Relative string `json:"rel"`
 	Type     string `json:"type"`
 	Href     string `json:"href"`
 }
 
-func (r YoutubeBot) DeferredAction(p *Payload) {
+func (r bot) DeferredAction(p *robots.Payload) {
 	text := strings.TrimSpace(p.Text)
 	if text != "" {
-		response := &IncomingWebhook{
+		response := &robots.IncomingWebhook{
 			Domain:      p.TeamDomain,
 			Channel:     p.ChannelID,
 			Username:    "YouTube Bot",
@@ -83,7 +79,7 @@ func (r YoutubeBot) DeferredAction(p *Payload) {
 		} else if err != nil {
 			response.Text = fmt.Sprintf("@%s: %s", p.UserName, "Error getting YouTube video :(")
 		} else {
-			results := YouTubeVideoFeedResults{}
+			results := youTubeVideoFeedResults{}
 			r, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				response.Text = fmt.Sprintf("@%s: %s", p.UserName, "Error getting YouTube video :(")
@@ -103,7 +99,7 @@ func (r YoutubeBot) DeferredAction(p *Payload) {
 	}
 }
 
-func (r YoutubeBot) Description() (description string) {
+func (r bot) Description() (description string) {
 	// In addition to a Run method, each Robot must implement a Description method which
 	// is just a simple string describing what the Robot does. This is used in the included
 	// /c command which gives users a list of commands and descriptions

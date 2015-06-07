@@ -2,45 +2,43 @@ package robots
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
-	"path/filepath"
 	"strings"
+
+	"github.com/trinchan/slackbot/robots"
 )
 
-type PivotalBot struct {
+type bot struct {
+	ProjectID string
+	Token     string
 }
 
-type PivotalConfiguration struct {
-	ProjectID int    `json:"project_id"`
-	Token     string `json:"token"`
-}
-type SearchResultContainer struct {
-	Epics   EpicsSearchResult   `json:epics`
+type searchResultContainer struct {
+	Epics   epicsSearchResult   `json:"epics"`
 	Query   string              `json:"query"`
-	Stories StoriesSearchResult `json:stories`
+	Stories storiesSearchResult `json:"stories"`
 }
 
-type EpicsSearchResult struct {
+type epicsSearchResult struct {
 	TotalHits         int    `json:"total_hits"`
-	Epics             []Epic `json:"epics"`
+	Epics             []epic `json:"epics"`
 	TotalHitsWithDone int    `json:"total_hits_with_done,omitempty"`
 }
 
-type StoriesSearchResult struct {
+type storiesSearchResult struct {
 	TotalHits            int     `json:"total_hits"`
 	TotalHitsWithDone    int     `json:"total_hits_with_done,omitempty"`
-	Stories              []Story `json:"stories"`
+	Stories              []story `json:"stories"`
 	TotalPoints          int     `json:"total_points"`
 	TotalPointsCompleted int     `json:"total_points_completed,omitempty"`
 }
 
-type Label struct {
+type label struct {
 	Kind      string `json:"kind"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
@@ -49,7 +47,7 @@ type Label struct {
 	ID        int    `json:"id"`
 }
 
-type Epic struct {
+type epic struct {
 	CommentIDs  []int  `json:"comment_ids"`
 	Name        string `json:"name"`
 	Kind        string `json:"kind"`
@@ -64,7 +62,7 @@ type Epic struct {
 	AfterID     int    `json:"after_id"`
 }
 
-type Story struct {
+type story struct {
 	CommentIDs             []int   `json:"comment_ids,omitempty"`
 	CurrentState           string  `json:"current_state"`
 	Deadline               string  `json:"deadline,omitempty"`
@@ -73,24 +71,24 @@ type Story struct {
 	Name                   string  `json:"name"`
 	OwnedByID              int     `json:"owned_by_id,omitempty"`
 	Kind                   string  `json:"kind"`
-	Labels                 []Label `json:"labels,omitempty"`
+	Labels                 []label `json:"labels,omitempty"`
 	ID                     int     `json:"id"`
 	PlannedIterationNumber int     `json:"planned_iteration_number,omitempty"`
-	External_ID            string  `json:"external_id,omitempty"`
+	ExternalID             string  `json:"external_id,omitempty"`
 	Estimate               int     `json:"estimate"`
 	TaskIDs                []int   `json:"task_ids,omitempty"`
-	Updated_At             string  `json:"updated_at"`
+	UpdatedAt              string  `json:"updated_at"`
 	URL                    string  `json:"url"`
 	ProjectID              int     `json:"project_id"`
 	StoryType              string  `json:"story_type"`
-	Accepted_At            string  `json:"accepted_at"`
+	AcceptedAt             string  `json:"accepted_at"`
 	FollowerIDs            []int   `json:"follower_ids,omitempty"`
 	CreatedAt              string  `json:"created_at"`
 	Description            string  `json:"description"`
 	OwnerIDs               []int   `json:"owner_ids,omitempty"`
 }
 
-type Task struct {
+type task struct {
 	Complete    bool   `json:"complete"`
 	Kind        string `json:"kind"`
 	ID          int    `json:"id"`
@@ -101,32 +99,20 @@ type Task struct {
 	Description string `json:"description"`
 }
 
-var PivotalConfig = new(PivotalConfiguration)
-
 // Loads the config file and registers the bot with the server for command /${1/(.+)/\L\1/g}.
 func init() {
-	flag.Parse()
-	configFile := filepath.Join(*ConfigDirectory, "pivotal.json")
-	if _, err := os.Stat(configFile); err == nil {
-		config, err := ioutil.ReadFile(configFile)
-		if err != nil {
-			log.Printf("ERROR: Error opening pivotal config: %s", err)
-			return
-		}
-		err = json.Unmarshal(config, PivotalConfig)
-		if err != nil {
-			log.Printf("ERROR: Error parsing pivotal config: %s", err)
-			return
-		}
-	} else {
-		log.Printf("WARNING: Could not find configuration file pivotal.json in %s", *ConfigDirectory)
+	p := &bot{}
+	p.ProjectID = os.Getenv("PIVOTAL_PROJECT_ID")
+	p.Token = os.Getenv("PIVOTAL_TOKEN")
+	if p.ProjectID == "" || p.Token == "" {
+		log.Println("PIVOTAL_PROJECT_ID or PIVOTAL_TOKEN not set, Pivotal bot disabled")
+		return
 	}
-	p := &PivotalBot{}
-	RegisterRobot("pivotal", p)
+	robots.RegisterRobot("pivotal", p)
 }
 
 // All Robots must implement a Run command to be executed when the registered command is received.
-func (r PivotalBot) Run(p *Payload) (s string) {
+func (r bot) Run(p *robots.Payload) (s string) {
 	// The string returned here will be shown only to the user who executed the command
 	// and will show up as a message from slackbot.
 	text := strings.TrimSpace(p.Text)
@@ -136,25 +122,24 @@ func (r PivotalBot) Run(p *Payload) (s string) {
 		query := strings.Join(split[1:], " ")
 		switch pc {
 		case "query":
-			return r.Query(query)
+			return r.query(query)
 		case "start", "unstart", "finish", "accept", "reject", "deliver":
-			return r.ChangeState(pc, query)
+			return r.changeState(pc, query)
 		}
 		return fmt.Sprintf("Unknown pivotal command: %s\n%s", pc, r.Description())
-	} else {
-		return ""
 	}
+	return ""
 }
 
-func (r PivotalBot) ChangeState(state string, storyID string) (result string) {
+func (r bot) changeState(state string, storyID string) (result string) {
 	params := url.Values{}
 	params.Set("current_state", state+"ed")
-	req, err := http.NewRequest("PUT", fmt.Sprintf("https://www.pivotaltracker.com/services/v5/projects/%d/stories/%s", PivotalConfig.ProjectID, storyID), nil)
+	req, err := http.NewRequest("PUT", fmt.Sprintf("https://www.pivotaltracker.com/services/v5/projects/%s/stories/%s", r.ProjectID, storyID), nil)
 	if err != nil {
 		return fmt.Sprintf("ERROR: Error forming put request to Pivotal: %s", err)
 	}
 	req.URL.RawQuery = params.Encode()
-	req.Header.Add("X-TrackerToken", PivotalConfig.Token)
+	req.Header.Add("X-TrackerToken", r.Token)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return fmt.Sprintf("ERROR: Error making put request to Pivotal: %s", err)
@@ -169,7 +154,7 @@ func (r PivotalBot) ChangeState(state string, storyID string) (result string) {
 	if err != nil {
 		return fmt.Sprintf("ERROR: Error reading response body from Pivotal: %s", err)
 	}
-	s := Story{}
+	s := story{}
 	err = json.Unmarshal(contents, &s)
 	if err != nil {
 		return fmt.Sprintf("ERROR: Couldn't unmarshal pivotal story response into struct: %s", err)
@@ -177,15 +162,15 @@ func (r PivotalBot) ChangeState(state string, storyID string) (result string) {
 	return fmt.Sprintf("[%s <%s|#%d>] - %s", s.CurrentState, s.URL, s.ID, s.Name)
 }
 
-func (r PivotalBot) Query(query string) (result string) {
+func (r bot) query(query string) (result string) {
 	params := url.Values{}
 	params.Set("query", query)
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://www.pivotaltracker.com/services/v5/projects/%d/search", PivotalConfig.ProjectID), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://www.pivotaltracker.com/services/v5/projects/%s/search", r.ProjectID), nil)
 	req.URL.RawQuery = params.Encode()
 	if err != nil {
 		return fmt.Sprintf("ERROR: Error forming get request to Pivotal: %s", err)
 	}
-	req.Header.Add("X-TrackerToken", PivotalConfig.Token)
+	req.Header.Add("X-TrackerToken", r.Token)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return fmt.Sprintf("ERROR: Error making get request to Pivotal: %s", err)
@@ -200,7 +185,7 @@ func (r PivotalBot) Query(query string) (result string) {
 	if err != nil {
 		return fmt.Sprintf("ERROR: Error reading response body from Pivotal: %s", err)
 	}
-	searchResults := SearchResultContainer{}
+	searchResults := searchResultContainer{}
 	err = json.Unmarshal(contents, &searchResults)
 	if err != nil {
 		return fmt.Sprintf("ERROR: Couldn't unmarshal pivotal response into struct: %s", err)
@@ -213,12 +198,11 @@ func (r PivotalBot) Query(query string) (result string) {
 	}
 	if output == "" {
 		return "No stories matching that query :("
-	} else {
-		return strings.TrimSpace(output)
 	}
+	return strings.TrimSpace(output)
 }
 
-func (r PivotalBot) Description() (description string) {
+func (r bot) Description() (description string) {
 	// In addition to a Run method, each Robot must implement a Description method which
 	// is just a simple string describing what the Robot does. This is used in the included
 	// /c command which gives users a list of commands and descriptions

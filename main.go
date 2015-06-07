@@ -2,22 +2,24 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
-	"strconv"
+	"os"
 	"strings"
 
 	"github.com/gorilla/schema"
+	_ "github.com/trinchan/slackbot/importer"
 	"github.com/trinchan/slackbot/robots"
 )
 
 func main() {
-	http.HandleFunc("/slack", SlashCommandHandler)
-	http.HandleFunc("/slack_hook", HookHandler)
-	StartServer()
+	http.HandleFunc("/slack", slashCommandHandler)
+	http.HandleFunc("/slack_hook", hookHandler)
+	startServer()
 }
 
-func HookHandler(w http.ResponseWriter, r *http.Request) {
+func hookHandler(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -29,22 +31,31 @@ func HookHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Couldn't parse post request:", err)
 	}
+	if command.Text == "" || command.Token != os.Getenv(fmt.Sprintf("%s_OUT_TOKEN", strings.ToUpper(command.TeamDomain))) {
+		log.Printf("[DEBUG] Ignoring request from unidentified source: %s - %s", command.Token, r.Host)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	log.Printf("Recieved command: %s from \"%s\"\n", command.Text[1:len(command.Text)], command.TeamDomain)
 	//Assume outgoing webhooks are preceded with a character
 	c := strings.Split(command.Text[1:len(command.Text)], " ")
 	command.Robot = c[0]
 	command.Text = strings.Join(c[1:], " ")
 
-	robot := GetRobot(command.Robot)
-	if robot == nil {
+	robots := getRobots(command.Robot)
+	if len(robots) == 0 {
 		jsonResp(w, "No robot for that command yet :(")
 		return
 	}
+	resp := ""
+	for _, robot := range robots {
+		resp += fmt.Sprintf("\n%s", robot.Run(&command.Payload))
+	}
 	w.WriteHeader(http.StatusOK)
-	jsonResp(w, robot.Run(&command.Payload))
+	jsonResp(w, resp)
 }
 
-func SlashCommandHandler(w http.ResponseWriter, r *http.Request) {
+func slashCommandHandler(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -56,13 +67,22 @@ func SlashCommandHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Couldn't parse post request:", err)
 	}
+	if command.Command == "" || command.Token == "" || command.Token != os.Getenv(fmt.Sprintf("%s_OUT_TOKEN", strings.ToUpper(command.TeamDomain))) {
+		log.Printf("[DEBUG] Ignoring request from unidentified source: %s - %s", command.Token, r.Host)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	command.Robot = command.Command[1:]
-	robot := GetRobot(command.Robot)
-	if robot == nil {
+	robots := getRobots(command.Robot)
+	if len(robots) == 0 {
 		plainResp(w, "No robot for that command yet :(")
 		return
 	}
-	plainResp(w, robot.Run(&command.Payload))
+	resp := ""
+	for _, robot := range robots {
+		resp += fmt.Sprintf("\n%s", robot.Run(&command.Payload))
+	}
+	plainResp(w, resp)
 }
 
 func jsonResp(w http.ResponseWriter, msg string) {
@@ -82,16 +102,19 @@ func plainResp(w http.ResponseWriter, msg string) {
 	w.Write([]byte(msg))
 }
 
-func StartServer() {
-	port := robots.Config.Port
-	log.Printf("Starting HTTP server on %d", port)
-	err := http.ListenAndServe(":"+strconv.Itoa(port), nil)
+func startServer() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Fatal("PORT not set")
+	}
+	log.Printf("Starting HTTP server on %s", port)
+	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		log.Fatal("Server start error: ", err)
 	}
 }
 
-func GetRobot(command string) robots.Robot {
+func getRobots(command string) []robots.Robot {
 	if r, ok := robots.Robots[command]; ok {
 		return r
 	}

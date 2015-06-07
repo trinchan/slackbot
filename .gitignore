@@ -24,4 +24,8 @@ _testmain.go
 
 slackbot
 
+.env
+
 configs
+
+importer/init.go

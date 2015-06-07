@@ -1,5 +1,15 @@
 package robots
 
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"net/url"
+	"os"
+	"strings"
+)
+
 type SlashCommand struct {
 	Payload
 	Command string `schema:"command"`
@@ -16,7 +26,7 @@ type Payload struct {
 	UserName    string  `schema:"user_name"`
 	Text        string  `schema:"text,omitempty"`
 	TriggerWord string  `schema:"trigger_word,omitempty"`
-	Service_ID  string  `schema:"service_id,omitempty"`
+	ServiceID   string  `schema:"service_id,omitempty"`
 	Robot       string
 }
 
@@ -78,12 +88,32 @@ type AttachmentField struct {
 	Short bool   `json:"short,omitempty"`
 }
 
-type Configuration struct {
-	Port         int               `json:"port"`
-	DomainTokens map[string]string `json:"domain_tokens"`
-}
+// Send uses the IncomingWebhook API to post a message to a slack channel
+func (i *IncomingWebhook) Send() error {
+	token := os.Getenv(fmt.Sprintf("%s_TOKEN", strings.ToUpper(i.Domain)))
+	if token != "" {
+		return fmt.Errorf("Slack token not found for domain %s (expecting %s)", i.Domain, fmt.Sprintf("%s_IN_TOKEN", strings.ToUpper(i.Domain)))
+	}
+	webhook := url.URL{
+		Scheme: "https",
+		Host:   i.Domain + ".slack.com",
+		Path:   "/services/hooks/incoming-webhook",
+	}
 
-type Robot interface {
-	Run(p *Payload) (botString string)
-	Description() (description string)
+	p, err := json.Marshal(i)
+	if err != nil {
+		return err
+	}
+
+	data := url.Values{}
+	data.Set("payload", string(p))
+	data.Set("token", token)
+
+	webhook.RawQuery = data.Encode()
+	resp, err := http.PostForm(webhook.String(), data)
+	if resp.StatusCode != 200 {
+		message := fmt.Sprintf("ERROR: Non-200 Response from Slack Incoming Webhook API: %s", resp.Status)
+		log.Println(message)
+	}
+	return err
 }

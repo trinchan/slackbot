@@ -2,16 +2,16 @@ package robots
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/trinchan/slackbot/robots"
 )
 
 type profile struct {
@@ -82,54 +82,36 @@ var prefixes = map[string]string{
 	"waseda":    "wasedastyle",
 }
 
-type BijinBot struct {
+type bot struct {
+	Token    string
 	Location *time.Location
 }
 
-type BijinConfiguration struct {
-	Timezone string `json:"timezone"`
-}
-
-var BijinConfig = new(BijinConfiguration)
-
 func init() {
-	flag.Parse()
-	configFile := filepath.Join(*ConfigDirectory, "bijin.json")
-	if _, err := os.Stat(configFile); err == nil {
-		config, err := ioutil.ReadFile(configFile)
-		if err != nil {
-			log.Printf("ERROR: Error opening bijin config: %s", err)
-			return
-		}
-		err = json.Unmarshal(config, BijinConfig)
-		if err != nil {
-			log.Printf("ERROR: Error parsing bijin config: %s", err)
-			return
-		}
-	} else {
-		log.Printf("WARNING: Could not find configuration file bijin.json in %s", *ConfigDirectory)
+	b := &bot{}
+	l, err := time.LoadLocation(os.Getenv("BIJIN_TIMEZONE"))
+	if err != nil {
+		log.Printf("Error loading location: %v", err)
 	}
-	b := &BijinBot{}
-	if BijinConfig.Timezone != "" {
-		loc, err := time.LoadLocation(BijinConfig.Timezone)
-		if err != nil {
-			log.Printf("Error loading timezone %q, falling back to UTC (%s)", BijinConfig.Timezone, err.Error())
-			b.Location = time.UTC
-		} else {
-			b.Location = loc
-		}
+	b.Location = l
+	b.Token = os.Getenv("BIJIN_SLACK_TOKEN")
+	if b.Token == "" {
+		log.Println("[WARNING] BIJIN_SLACK_TOKEN not set, will not verify payloads")
 	}
-
-	RegisterRobot("bijin", b)
+	robots.RegisterRobot("bijin", b)
 }
 
-func (r BijinBot) Run(p *Payload) (slashCommandImmediateReturn string) {
+func (r bot) Run(p *robots.Payload) (slashCommandImmediateReturn string) {
+	if r.Token != "" && p.Token != r.Token {
+		log.Println("[WARNING] Ignoring request from unknown source")
+		return ""
+	}
 	go r.DeferredAction(p)
 	return ""
 }
 
-func (r BijinBot) DeferredAction(p *Payload) {
-	response := &IncomingWebhook{
+func (r bot) DeferredAction(p *robots.Payload) {
+	response := &robots.IncomingWebhook{
 		Domain:      p.TeamDomain,
 		Channel:     p.ChannelID,
 		Username:    "Bijin Bot",
@@ -203,6 +185,6 @@ func getLink(region string) (string, string, string) {
 	return r, fmt.Sprintf(picTempl, i), fmt.Sprintf(infoTempl, i)
 }
 
-func (r BijinBot) Description() (description string) {
+func (r bot) Description() (description string) {
 	return "Displays the current time's 美人 (hope bijint.com doesn't get mad me)\n\tUsage: /bijin\n\tExpected Response: (beautiful woman)"
 }

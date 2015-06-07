@@ -2,34 +2,35 @@ package robots
 
 import (
 	"fmt"
+
+	"github.com/trinchan/slackbot/robots"
 )
 
-type PingBot struct {
-}
+type bot struct{}
 
 func init() {
-	p := &PingBot{}
-	RegisterRobot("ping", p)
+	p := &bot{}
+	robots.RegisterRobot("ping", p)
 }
 
-func (pb PingBot) Run(p *Payload) (slashCommandImmediateReturn string) {
+func (pb bot) Run(p *robots.Payload) (slashCommandImmediateReturn string) {
 	go pb.DeferredAction(p)
 	return ""
 }
 
-func (pb PingBot) DeferredAction(p *Payload) {
-	response := &IncomingWebhook{
+func (pb bot) DeferredAction(p *robots.Payload) {
+	response := &robots.IncomingWebhook{
 		Domain:      p.TeamDomain,
 		Channel:     p.ChannelID,
 		Username:    "Ping Bot",
 		Text:        fmt.Sprintf("@%s Pong!", p.UserName),
 		IconEmoji:   ":ghost:",
 		UnfurlLinks: true,
-		Parse:       ParseStyleFull,
+		Parse:       robots.ParseStyleFull,
 	}
 	response.Send()
 }
 
-func (pb PingBot) Description() (description string) {
+func (pb bot) Description() (description string) {
 	return "Ping bot!\n\tUsage: /ping\n\tExpected Response: @user: Pong!"
 }

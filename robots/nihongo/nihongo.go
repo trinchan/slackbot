@@ -1,4 +1,4 @@
-package robots
+package nihongo
 
 import (
 	"encoding/json"
@@ -8,14 +8,15 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/trinchan/slackbot/robots"
 )
 
-type NihongoBot struct {
-}
+type bot struct{}
 
 func init() {
-	w := &NihongoBot{}
-	RegisterRobot("nihongo", w)
+	w := &bot{}
+	robots.RegisterRobot("nihongo", w)
 }
 
 type nihongoResponse struct {
@@ -39,7 +40,7 @@ func (c common) String() string {
 	return ""
 }
 
-func (n NihongoBot) Run(p *Payload) (slashCommandImmediateReturn string) {
+func (n bot) Run(p *robots.Payload) (slashCommandImmediateReturn string) {
 	text := strings.TrimSpace(p.Text)
 	if text != "" {
 		req, err := http.NewRequest("GET", fmt.Sprintf("http://nihongo.io/search?text=%s", url.QueryEscape(text)), nil)
@@ -77,6 +78,6 @@ func (n NihongoBot) Run(p *Payload) (slashCommandImmediateReturn string) {
 	}
 	return ""
 }
-func (n NihongoBot) Description() (description string) {
+func (n bot) Description() (description string) {
 	return "Nihongo bot!\n\tUsage: /nihongo {word}\n\tExpected Response: @user: {definition} "
 }
