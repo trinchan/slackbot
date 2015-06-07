@@ -22,7 +22,7 @@ func (r bot) Run(p *robots.Payload) (slashCommandImmediateReturn string) {
 		r := com[0]
 		robs := robots.Robots[r]
 		if len(robs) == 0 {
-			return fmt.Sprintf("%s bot not found", r)
+			return fmt.Sprintf("%s bot not found, for the list of bots, use /bot help", r)
 		}
 		fp := &robots.Payload{}
 		*fp = *p
