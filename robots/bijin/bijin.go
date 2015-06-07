@@ -83,7 +83,6 @@ var prefixes = map[string]string{
 }
 
 type bot struct {
-	Token    string
 	Location *time.Location
 }
 
@@ -94,18 +93,10 @@ func init() {
 		log.Printf("Error loading location: %v", err)
 	}
 	b.Location = l
-	b.Token = os.Getenv("BIJIN_SLACK_TOKEN")
-	if b.Token == "" {
-		log.Println("[WARNING] BIJIN_SLACK_TOKEN not set, will not verify payloads")
-	}
 	robots.RegisterRobot("bijin", b)
 }
 
 func (r bot) Run(p *robots.Payload) (slashCommandImmediateReturn string) {
-	if r.Token != "" && p.Token != r.Token {
-		log.Println("[WARNING] Ignoring request from unknown source")
-		return ""
-	}
 	go r.DeferredAction(p)
 	return ""
 }
