@@ -51,7 +51,7 @@ func hookHandler(w http.ResponseWriter, r *http.Request) {
 		resp += fmt.Sprintf("\n%s", robot.Run(&command.Payload))
 	}
 	w.WriteHeader(http.StatusOK)
-	jsonResp(w, resp)
+	jsonResp(w, strings.TrimSpace(resp))
 }
 
 func slashCommandHandler(w http.ResponseWriter, r *http.Request) {

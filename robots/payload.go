@@ -100,8 +100,6 @@ func (i *IncomingWebhook) Send() error {
 		return err
 	}
 
-	log.Printf("Sending incoming webhook to %s", webhook.Path)
-
 	p, err := json.Marshal(i)
 	if err != nil {
 		return err
@@ -111,7 +109,6 @@ func (i *IncomingWebhook) Send() error {
 	data.Set("payload", string(p))
 
 	webhook.RawQuery = data.Encode()
-	log.Printf("Posting incoming webhook to %#v", webhook)
 	resp, err := http.PostForm(webhook.String(), data)
 	if resp.StatusCode != 200 {
 		message := fmt.Sprintf("ERROR: Non-200 Response from Slack Incoming Webhook API: %s", resp.Status)
