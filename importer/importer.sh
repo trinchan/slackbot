@@ -10,7 +10,6 @@ robots=(
     "github.com/trinchan/slackbot/robots/roll"
     "github.com/trinchan/slackbot/robots/store"
     "github.com/trinchan/slackbot/robots/wiki"
-    "github.com/trinchan/slackbot/robots/youtube"
     "github.com/trinchan/slackbot/robots/bot"
 )
 
