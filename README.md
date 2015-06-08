@@ -18,12 +18,6 @@ MYDOMAIN_IN_URL=https://hooks.slack.com/services/AAAAAAAAA/BBBBBBBBB/AnotherVery
 PORT=5000
 ```
 
-If you are not using Heroku, making a `env.sh` file which exports your environment variables and running slackbot via
-```
-source env.sh && slackbot
-```
-makes for a convenient one-liner.
-
 ###Setup an Incoming Webhook
 If you don't already have an [Incoming Webhook](https://my.slack.com/services/new/incoming-webhook) setup for your bot, you'll want to start here.  Set one up (make sure it's enabled) and don't be afraid to read through the setup instructions.  You're after the "Webhook URL" that slack generates for you.
 ```
@@ -120,7 +114,11 @@ If you are using [Slash Commands](https://my.slack.com/services/new/slash-comman
 
 Running
 =======
-`slackbot`
+If you are not using Heroku, making a `env.sh` file which exports your environment variables and running slackbot via
+```
+go generate ./... && source env.sh && slackbot
+```
+makes for a convenient one-liner.
 
 If you see output similar to below and you have the commands enabled in your Slack integration, you're ready to go!
 ```
