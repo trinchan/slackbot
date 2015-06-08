@@ -15,6 +15,7 @@ An example environment variable list:
 BIJIN_TIMEZONE=Asia/Tokyo
 MYDOMAIN_OUT_TOKEN=AVerySecretToken
 MYDOMAIN_IN_URL=https://hooks.slack.com/services/AAAAAAAAA/BBBBBBBBB/AnotherVerySecretToken
+PORT=5000
 ```
 
 ###Setup an Incoming Webhook
@@ -113,7 +114,11 @@ If you are using [Slash Commands](https://my.slack.com/services/new/slash-comman
 
 Running
 =======
-`slackbot`
+If you are not using Heroku, making a `env.sh` file which exports your environment variables and running slackbot via
+```
+source env.sh && slackbot
+```
+makes for a convenient one-liner.
 
 If you see output similar to below and you have the commands enabled in your Slack integration, you're ready to go!
 ```
