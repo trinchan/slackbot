@@ -105,7 +105,7 @@ func (r bot) Description() string {
 	// In addition to a Run method, each Robot must implement a Description method which
 	// is just a simple string describing what the Robot does. This is used in the included
 	// /c command which gives users a list of commands and descriptions
-	return "This is a description for TestBot which will be displayed on /help"
+	return "This is a description for TestBot which will be displayed on /bots"
 }
 
 ```
@@ -127,7 +127,7 @@ If you see output similar to below and you have the commands enabled in your Sla
 2015/06/07 23:26:56 Registered: roll
 2015/06/07 23:26:56 Registered: ping
 2015/06/07 23:26:56 Registered: nihongo
-2015/06/07 23:26:56 Registered: help
+2015/06/07 23:26:56 Registered: bots
 2015/06/07 23:26:56 Registered: decide
 2015/06/07 23:26:56 Registered: bot
 2015/06/07 23:26:56 Registered: bijin
