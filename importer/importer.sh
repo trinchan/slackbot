@@ -4,7 +4,7 @@ touch $1
 robots=(
     "github.com/trinchan/slackbot/robots/decide"
     "github.com/trinchan/slackbot/robots/bijin"
-    "github.com/trinchan/slackbot/robots/help"
+    "github.com/trinchan/slackbot/robots/bots"
     "github.com/trinchan/slackbot/robots/nihongo"
     "github.com/trinchan/slackbot/robots/ping"
     "github.com/trinchan/slackbot/robots/roll"
