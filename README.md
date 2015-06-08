@@ -15,6 +15,7 @@ An example environment variable list:
 BIJIN_TIMEZONE=Asia/Tokyo
 MYDOMAIN_OUT_TOKEN=AVerySecretToken
 MYDOMAIN_IN_URL=https://hooks.slack.com/services/AAAAAAAAA/BBBBBBBBB/AnotherVerySecretToken
+PORT=5000
 ```
 
 ###Setup an Incoming Webhook
