@@ -116,7 +116,7 @@ Running
 =======
 If you are not using Heroku, making a `env.sh` file which exports your environment variables and running slackbot via
 ```
-go generate ./... && source env.sh && slackbot
+source env.sh && slackbot
 ```
 makes for a convenient one-liner.
 
