@@ -10,6 +10,13 @@ Setup
 =====
 Slackbot uses environment variables for all configuration, with domain wide variables prefixed by the domain name in title case (e.g. `MYDOMAIN_IN_URL` for MyDomain's incoming webhook URL). This makes it easy to support multiple domains and deploy to Heroku. Make sure to set a `PORT` environment variable defining what port to run your bot on.
 
+An example environment variable list:
+```
+BIJIN_TIMEZONE=Asia/Tokyo
+MYDOMAIN_OUT_TOKEN=AVerySecretToken
+MYDOMAIN_IN_URL=https://hooks.slack.com/services/AAAAAAAAA/BBBBBBBBB/AnotherVerySecretToken
+```
+
 ###Setup an Incoming Webhook
 If you don't already have an [Incoming Webhook](https://my.slack.com/services/new/incoming-webhook) setup for your bot, you'll want to start here.  Set one up (make sure it's enabled) and don't be afraid to read through the setup instructions.  You're after the "Webhook URL" that slack generates for you.
 ```
