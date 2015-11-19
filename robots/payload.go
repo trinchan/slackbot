@@ -27,6 +27,7 @@ type Payload struct {
 	Text        string  `schema:"text,omitempty"`
 	TriggerWord string  `schema:"trigger_word,omitempty"`
 	ServiceID   string  `schema:"service_id,omitempty"`
+	ResponseUrl string  `schema:"response_url,omitempty"`
 	Robot       string
 }
 
