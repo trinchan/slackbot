@@ -98,21 +98,24 @@ func (i IncomingWebhook) Send() error {
 	if u == "" {
 		return fmt.Errorf("Slack Incoming Webhook URL not found for domain %s (check %s)", i.Domain, fmt.Sprintf("%s_IN_URL", strings.ToUpper(i.Domain)))
 	}
-	return Message(i).sendToUrl(u, "Incoming Webhook")
+	return Message(i).sendToUrl(u)
 }
 
 // Send a response to the ResponseUrl in the Payload
 func (r SlashCommandResponse) Send(p *Payload) error {
-	return Message(r).sendToUrl(p.ResponseUrl, "Response")
+	if p.ResponseUrl == "" {
+		return fmt.Errorf("Empty ResponseUrl in Payload: %v", p)
+	}
+	return Message(r).sendToUrl(p.ResponseUrl)
 }
 
-func (i Message) sendToUrl(u string, urlType string) error {
+func (i Message) sendToUrl(u string) error {
 	if u == "" {
-		return fmt.Errorf("Empty Slack %s URL", urlType)
+		return fmt.Errorf("Empty URL")
 	}
 	webhook, err := url.Parse(u)
 	if err != nil {
-		log.Printf("Error parsing %s URL: %v", urlType, err)
+		log.Printf("Error parsing URL \"%s\": %v", u, err)
 		return err
 	}
 
@@ -127,7 +130,7 @@ func (i Message) sendToUrl(u string, urlType string) error {
 	webhook.RawQuery = data.Encode()
 	resp, err := http.PostForm(webhook.String(), data)
 	if resp.StatusCode != 200 {
-		message := fmt.Sprintf("ERROR: Non-200 Response from Slack %s URL: %s", urlType, resp.Status)
+		message := fmt.Sprintf("ERROR: Non-200 Response from Slack URL \"%s\": %s", u, resp.Status)
 		log.Println(message)
 	}
 	return err
