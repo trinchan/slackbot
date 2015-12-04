@@ -1,6 +1,6 @@
 slackbot
 ===========
-Simple, pluggable bot framework for [Slack](https://www.slack.com) chat.  
+Simple, pluggable bot framework for [Slack](https://www.slack.com) chat.
 
 Installation
 ============
@@ -35,16 +35,16 @@ I use an [Outgoing Webhook](https://my.slack.com/services/new/outgoing-webhook)
 1. Add a new Outgoing Webhook Integration.
 2. Here, you can tell slack to ONLY pay attention to a specific channel, or to simply listen to all public channels.  Outgoing Webhooks can not listen to private channels/direct messages.
 3. For each domain, set an environment variable `DOMAIN_OUT_TOKEN` to your integration's token. This is used to verify payloads come from Slack.
-4. The {trigger_word} should only be one character (preferrably a symbol, such as ! or ?) and typing `{trigger_word}ping` will trigger the Ping bot.  
-5. The URL should follow the following format: `your_address.com:port/slack_hook` (no trailing /)  
+4. The {trigger_word} should only be one character (preferrably a symbol, such as ! or ?) and typing `{trigger_word}ping` will trigger the Ping bot.
+5. The URL should follow the following format: `your_address.com:port/slack_hook` (no trailing /)
 The bot will respond to commands of the form `{trigger_word}bot param param param` in the specified channels
 
 #####Configuring Slash Commands
 Alternatively, each bot you make can respond to a corresponding [Slash Command](https://my.slack.com/services/new/slash-commands).
 
-1. Add a new slash command, use the [bot's name](https://github.com/trinchan/slackbot/tree/master/robots) as the name of the command.  
-2. The URL should follow the following format: `your_address.com:port/slack` (no trailing /)  
-3. You want to use POST.  
+1. Add a new slash command, use the [bot's name](https://github.com/trinchan/slackbot/tree/master/robots) as the name of the command.
+2. The URL should follow the following format: `your_address.com:port/slack` (no trailing /)
+3. You want to use POST.
 4. For each bot, set an environment variable `BOTNAME_SLACK_TOKEN` to your slash command's token. This is used to verify payloads come from Slack.
 5. Repeat for each bot you want to enable.
 
@@ -90,6 +90,8 @@ func (r bot) DeferredAction(p *robots.Payload) {
 	// IncomingWebhook message to slack that can be seen by everyone in the room. You can
 	// read the Slack API Docs (https://api.slack.com/) to know which fields are required, etc.
 	// You can also see what data is available from the command structure in definitions.go
+	// Alternatively, you can make a SlashCommandResponse, with the same fields, and call
+	// reponse.Send(p)
 	response := &robots.IncomingWebhook{
 		Channel:     p.ChannelID,
 		Username:    "Test Bot",

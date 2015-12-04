@@ -50,7 +50,7 @@ var (
 	ParseStyleNone = ParseStyle("none")
 )
 
-type IncomingWebhook struct {
+type Message struct {
 	Domain      string       `json:"domain"`
 	Channel     string       `json:"channel"`
 	Username    string       `json:"username"`
@@ -63,6 +63,9 @@ type IncomingWebhook struct {
 	LinkNames   bool         `json:"link_names,omitempty"`
 	Markdown    bool         `json:"mrkdwn,omitempty"`
 }
+
+type IncomingWebhook Message
+type SlashCommandResponse Message
 
 type Attachment struct {
 	Fallback   string            `json:"fallback"`
@@ -90,14 +93,29 @@ type AttachmentField struct {
 }
 
 // Send uses the IncomingWebhook API to post a message to a slack channel
-func (i *IncomingWebhook) Send() error {
+func (i IncomingWebhook) Send() error {
 	u := os.Getenv(fmt.Sprintf("%s_IN_URL", strings.ToUpper(i.Domain)))
 	if u == "" {
-		return fmt.Errorf("Slack incoming webhook url not found for domain %s (check %s)", i.Domain, fmt.Sprintf("%s_IN_URL", strings.ToUpper(i.Domain)))
+		return fmt.Errorf("Slack Incoming Webhook URL not found for domain %s (check %s)", i.Domain, fmt.Sprintf("%s_IN_URL", strings.ToUpper(i.Domain)))
+	}
+	return Message(i).sendToUrl(u)
+}
+
+// Send a response to the ResponseUrl in the Payload
+func (r SlashCommandResponse) Send(p *Payload) error {
+	if p.ResponseUrl == "" {
+		return fmt.Errorf("Empty ResponseUrl in Payload: %v", p)
+	}
+	return Message(r).sendToUrl(p.ResponseUrl)
+}
+
+func (i Message) sendToUrl(u string) error {
+	if u == "" {
+		return fmt.Errorf("Empty URL")
 	}
 	webhook, err := url.Parse(u)
 	if err != nil {
-		log.Printf("Error parsing incoming webhook URL: %v", err)
+		log.Printf("Error parsing URL \"%s\": %v", u, err)
 		return err
 	}
 
@@ -112,7 +130,7 @@ func (i *IncomingWebhook) Send() error {
 	webhook.RawQuery = data.Encode()
 	resp, err := http.PostForm(webhook.String(), data)
 	if resp.StatusCode != 200 {
-		message := fmt.Sprintf("ERROR: Non-200 Response from Slack Incoming Webhook API: %s", resp.Status)
+		message := fmt.Sprintf("ERROR: Non-200 Response from Slack URL \"%s\": %s", u, resp.Status)
 		log.Println(message)
 	}
 	return err
