@@ -32,7 +32,7 @@ func hookHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Couldn't parse post request:", err)
 	}
 	if command.Text == "" || command.Token != os.Getenv(fmt.Sprintf("%s_OUT_TOKEN", strings.ToUpper(command.TeamDomain))) {
-		log.Printf("[DEBUG] Ignoring request from unidentified source: %s - %s", command.Token, r.Host)
+		log.Printf("[DEBUG] Ignoring request from unidentified source: %s - %s - %s", command.Token, r.Host, command.TeamDomain)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
