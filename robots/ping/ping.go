@@ -15,7 +15,7 @@ func init() {
 
 func (pb bot) Run(p *robots.Payload) (slashCommandImmediateReturn string) {
 	go pb.DeferredAction(p)
-	return ""
+	return "pong"
 }
 
 func (pb bot) DeferredAction(p *robots.Payload) {
