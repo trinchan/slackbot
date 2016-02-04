@@ -73,7 +73,7 @@ func slashCommandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	command.Robot = command.Command[1:]
 
-	if token := os.Getenv(fmt.Sprintf("%s_SLACK_TOKEN", strings.ToUpper(command.Robot))); token != "" && token != command.Token {
+	if token := getSlackToken(command.Robot); token != "" && token != command.Token {
 		log.Printf("[DEBUG] Ignoring request from unidentified source: %s - %s", command.Token, r.Host)
 		w.WriteHeader(http.StatusBadRequest)
 	}
@@ -104,6 +104,10 @@ func jsonResp(w http.ResponseWriter, msg string) {
 func plainResp(w http.ResponseWriter, msg string) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.Write([]byte(msg))
+}
+
+func getSlackToken(robot string) string {
+	return os.Getenv(fmt.Sprintf("%s_SLACK_TOKEN", strings.ToUpper(robot)))
 }
 
 func startServer() {
