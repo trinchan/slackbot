@@ -31,7 +31,7 @@ func hookHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Couldn't parse post request:", err)
 	}
-	if command.Text == "" || command.Token != os.Getenv(fmt.Sprintf("%s_OUT_TOKEN", strings.ToUpper(command.TeamDomain))) {
+	if command.Text == "" || command.Token != getOutToken(command.TeamDomain) {
 		log.Printf("[DEBUG] Ignoring request from unidentified source: %s - %s - %s", command.Token, r.Host, command.TeamDomain)
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -108,6 +108,10 @@ func plainResp(w http.ResponseWriter, msg string) {
 
 func getSlackToken(robot string) string {
 	return os.Getenv(fmt.Sprintf("%s_SLACK_TOKEN", strings.ToUpper(robot)))
+}
+
+func getOutToken(teamDomain string) string {
+	return os.Getenv(fmt.Sprintf("%s_OUT_TOKEN", strings.ToUpper(teamDomain)))
 }
 
 func startServer() {
