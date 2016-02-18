@@ -28,6 +28,8 @@ type Payload struct {
 	TriggerWord string  `schema:"trigger_word,omitempty"`
 	ServiceID   string  `schema:"service_id,omitempty"`
 	ResponseUrl string  `schema:"response_url,omitempty"`
+	BotID       string  `schema:"bot_id,omitempty"`
+	BotName     string  `schema:"bot_name,omitempty"`
 	Robot       string
 }
 
