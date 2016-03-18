@@ -135,3 +135,29 @@ If you see output similar to below and you have the commands enabled in your Sla
 2015/06/07 23:26:56 Registered: bijin
 2015/06/07 23:26:56 Starting HTTP server on 13748
 ```
+
+Using as a Library
+==================
+If you prefer to use slackbot as a library rather than a binary:
+
+1. Create a new package and implement the [Robot](https://github.com/trinchan/slackbot/tree/master/robots/robot.go) interface as above
+2. use a `main` function instead of an `init` function:
+
+```go
+package main
+
+import (
+  "github.com/trinchan/slackbot/robots"
+  "github.com/trinchan/slackbot/server"
+)
+
+type bot struct{}
+
+// Starts the server with a bot for command /test.
+func main() {
+	bots := map[string][]robots.Robot{"test": []robots.Robot{&bot{}}}
+	server.Main(bots)
+}
+
+```
+
