@@ -39,8 +39,8 @@ func (d bot) DeferredAction(p *robots.Payload) {
 	}
 	text := strings.TrimSpace(p.Text)
 	if text != "" {
-		split := strings.Split(text, ", ")
-		response.Text = fmt.Sprintf("@%s: Deciding between: (%s) -> %s", p.UserName, strings.Join(split, ", "), d.decide(split))
+		split := strings.Split(text, ",")
+		response.Text = fmt.Sprintf("@%s: Deciding between: (%s) -> %s", p.UserName, strings.Join(split, ","), d.decide(split))
 		response.Send()
 	}
 }
