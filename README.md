@@ -18,7 +18,7 @@ MYDOMAIN_IN_URL=https://hooks.slack.com/services/AAAAAAAAA/BBBBBBBBB/AnotherVery
 PORT=5000
 ```
 
-###Setup an Incoming Webhook
+### Setup an Incoming Webhook
 If you don't already have an [Incoming Webhook](https://my.slack.com/services/new/incoming-webhook) setup for your bot, you'll want to start here.  Set one up (make sure it's enabled) and don't be afraid to read through the setup instructions.  You're after the "Webhook URL" that slack generates for you.
 ```
 https://hooks.slack.com/services/AAAAAAAAA/BBBBBBBBB/YourSecretToken123456789
@@ -26,10 +26,10 @@ https://hooks.slack.com/services/AAAAAAAAA/BBBBBBBBB/YourSecretToken123456789
 
 For each domain, set an environment variable `DOMAIN_IN_URL` to this URL.
 
-###Send messages to your bot
+### Send messages to your bot
 This framework can respond to "slash commands" and "outgoing webhooks"  If you want users to be able to silently type `/ping`, and have the ping-bot respond in their channel, then you'll want to set up "slash commands".  Each bot will need it's own command setup.  The other option is to configure an outgoing webhook with a symbol for the prefix. Exe: `!ping`.  This option only requires one configuration, but the commands will be entered into the channel as regular messages.
 
-#####Configuring an Outgoing Webhook
+##### Configuring an Outgoing Webhook
 I use an [Outgoing Webhook](https://my.slack.com/services/new/outgoing-webhook)
 
 1. Add a new Outgoing Webhook Integration.
@@ -39,7 +39,7 @@ I use an [Outgoing Webhook](https://my.slack.com/services/new/outgoing-webhook)
 5. The URL should follow the following format: `your_address.com:port/slack_hook` (no trailing /)
 The bot will respond to commands of the form `{trigger_word}bot param param param` in the specified channels
 
-#####Configuring Slash Commands
+##### Configuring Slash Commands
 Alternatively, each bot you make can respond to a corresponding [Slash Command](https://my.slack.com/services/new/slash-commands).
 
 1. Add a new slash command, use the [bot's name](https://github.com/trinchan/slackbot/tree/master/robots) as the name of the command.
@@ -50,7 +50,7 @@ Alternatively, each bot you make can respond to a corresponding [Slash Command](
 
 The bot will respond to commands of the form `/bot param param param`
 
-###Configuring Heroku
+### Configuring Heroku
 After setting up the proper environment variables, deploying to heroku should be as simple using the [heroku-go-buildpack](https://github.com/trinchan/heroku-buildpack-go) with a one line modification to run `go generate ./...` before installing to generate the plugin import file.
 
 Adding Bots
